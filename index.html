@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>Test Thrower</title>
+<title>投ｯ！</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <script src="./js/lib/enchant.js"></script>
 <script src="./js/lib/ui.enchant.js"></script>
@@ -21,4 +21,19 @@ margin: 0;
 </head>
 <body style="background: #000;">
 </body>
+<script type="text/javascript" >
+    var winWidth = winInnerWidth = window.innerWidth ;
+    var winHeight = winInnerHeight= window.innerHeight ;
+
+    if( winWidth*1.33 > winHeight ){
+        winInnerWidth = Math.floor(winHeight * 75 / 100) ;
+    }else{
+        winInnerHeight = Math.floor(winWidth * 134 / 100) ;
+    }
+        var bps = Math.floor((winWidth - winInnerWidth) / 2);
+        var bpu = Math.floor((winHeight - winInnerHeight) / 2);
+        var style = ""+ "0px "+bps+ "px "+ "0px "+bps+ "px ";
+        document.body.style.padding = style;
+        window.scrollTo(0, 1);
+</script>
 </html>
