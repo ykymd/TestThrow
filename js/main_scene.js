@@ -84,6 +84,20 @@ var createMainScene = function( game ) {
             paper.pic.moveTo ( PAPER_X + touch.current.x - touch.begin.x,  PAPER_Y + touch.current.y - touch.begin.y );
         }
     } );
+
+    var pauseImage = game.assets['./img/pause.png'];
+    var pauseSize = {'width': 60, 'height': 60};
+    var pauseButton = new Button(pauseImage.width, pauseImage.height);
+    pauseButton.image = pauseImage;
+    pauseButton.originX = 0;
+    pauseButton.originY = 0;
+    pauseButton.scaleX = pauseSize.width / pauseImage.width;
+    pauseButton.scaleY = pauseSize.height / pauseImage.height;
+    pauseButton.moveTo(10, 10);
+    pauseButton.addEventListener('tap', function() {
+                                 game.pushScene(createPauseScene(game));
+                                 });
+    scene.addChild(pauseButton);
     
     return scene;
 };
