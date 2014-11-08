@@ -23,8 +23,14 @@ var createSelectScene = function(game) {
         sprite.backgroundColor = '#0' + i + i;
         sprite.moveTo((game.width - size.width) / 2, i * (size.height + margin) + margin);
         sprite.addEventListener('tap', function() {
+                                var curtain = new Sprite(game.width, game.height);
+                                curtain.backgroundColor = '#0';
+                                curtain.opacity = 0;
+                                curtain.tl.fadeIn(.25 * game.fps).exec(function(){
                                 game.removeScene(scene);
                                 game.replaceScene(createMainScene(game));
+                                                                       });
+                                scene.addChild(curtain);
                                 });
         sprite.addEventListener(Event.TOUCH_START, function() { pressedButton = this; });
         buttons.addChild(sprite);
