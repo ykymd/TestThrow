@@ -23,20 +23,30 @@ var createPauseScene = function(game) {
     curtain.opacity = .25;
     scene.addChild(curtain);
 
-    var size = {'width': 200, 'height': 60};
-    var gap = 50;
+    const size = {'width': 225, 'height': 75};
+    const gap = 50;
+    const resume_image = game.assets['./img/pause_continue.png'];
+    const back_image = game.assets['./img/pause_giveup.png'];
 
-    var resume = new Button(size.width, size.height);
-    resume.moveTo((game.width - size.width) / 2, (game.height - 2 * size.height - gap) / 2 - size.height);
-    resume.backgroundColor = '#088';
+    var resume = new Button(resume_image.width, resume_image.height);
+    resume.image = resume_image;
+    resume.originX = 0;
+    resume.originY = 0;
+    resume.scaleX = size.width / resume_image.width;
+    resume.scaleY = size.height / resume_image.height;
+    resume.moveTo((game.width - size.width) / 2, (game.height - size.height - gap) / 2 - size.height);
     resume.addEventListener('tap', function() {
                             game.popScene();
                             });
     scene.addChild(resume);
 
-    var back = new Button(size.width, size.height);
-    back.moveTo((game.width - size.width) / 2, (game.height - 2 * size.height - gap) / 2 + gap / 2);
-    back.backgroundColor = '#880';
+    var back = new Button(back_image.width, back_image.height);
+    back.image = back_image;
+    back.originX = 0;
+    back.originY = 0;
+    back.scaleX = size.width / back_image.width;
+    back.scaleY = size.height / back_image.height;
+    back.moveTo((game.width - size.width) / 2, (game.height - size.height - gap) / 2 + gap / 2);
     back.addEventListener('tap', function() {
                           game.replaceScene(createTitleScene(game));
                           });
