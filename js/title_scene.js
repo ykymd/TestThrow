@@ -2,6 +2,7 @@ var createTitleScene = function(game) {
     console.log("Title Scene");
     var scene = new Scene();
 
+    var sound = DOMSound.load('./sound/sei_ge_gomibako02.mp3');
     var image = game.assets['./img/title_1.png'];
     var sprite = new Sprite(image.width, image.height);
     sprite.image = image;
@@ -13,7 +14,9 @@ var createTitleScene = function(game) {
 
     scene.backgroundColor = '#FFF';
     scene.addEventListener('touchend', function() {
+                           sound.play();
                            sprite.image = game.assets['./img/title_2.png'];
+
                            var curtain = new Sprite(game.width, game.height);
                            curtain.backgroundColor = '#000';
                            curtain.opacity = 0.0;
