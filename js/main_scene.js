@@ -41,7 +41,6 @@ var createMainScene = function( game ) {
     paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
     scene.addChild(paper.pic);
     
-    
     function TouchProperty() {
         this.x = 0;
         this.y = 0;
@@ -49,8 +48,6 @@ var createMainScene = function( game ) {
         return this;
     }
     
-    
-    var touched = false;
     var touching = false;
     var touch = { 'begin': new TouchProperty(),
                   'end': new TouchProperty(),
@@ -62,11 +59,13 @@ var createMainScene = function( game ) {
     scene.addChild(debugLabel);
     
     var prevPoint = [];
-    const PREV_COUNT = 10;
+    const PREV_COUNT = 5;
     for ( var i = 0; i < PREV_COUNT; i++ ) {
         prevPoint[i] = new TouchProperty();
     }
     var from = new TouchProperty();
+    
+    
     
     
     // game main
@@ -86,7 +85,6 @@ var createMainScene = function( game ) {
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
         touch.current.x = e.x;
         touch.current.y = e.y;
-        
     } );
     scene.addEventListener( Event.TOUCH_END, function(e) {
         touch.end.x = e.x;
@@ -96,10 +94,9 @@ var createMainScene = function( game ) {
         if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  && 
              e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
              e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
-            touched = true;
+            paper.state = "wasted";
+            paper.pic.frame = Paper_frame.CRASH;
         }
-        
-        console.log(prevPoint[PREV_COUNT-1].x+","+prevPoint[PREV_COUNT-1].y);
         
         if ( paper.state == "wasted" &&  touch.end.y < prevPoint[PREV_COUNT-1].y ) {
             paper.state = "throw";
@@ -115,11 +112,6 @@ var createMainScene = function( game ) {
     scene.addEventListener( Event.ENTER_FRAME, function(e) {
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
         // console.log("tick past");
-        if ( touched == true ) {
-            paper.state = "wasted";
-            paper.pic.frame = Paper_frame.CRASH;
-            touched = false;
-        }
         if ( touching == true ) {
             if ( paper.state == "wasted" ) {
                 paper.pic.moveTo ( from.x ,  from.y + touch.current.y - touch.begin.y );
@@ -133,9 +125,11 @@ var createMainScene = function( game ) {
         }
         
         for ( var i = PREV_COUNT-1; i > 0; i-- ) {
-            prevPoint[i] = prevPoint[i-1];
+            prevPoint[i].x = prevPoint[i-1].x;
+            prevPoint[i].y = prevPoint[i-1].y;
         }
-        prevPoint[0] = touch.current;
+        prevPoint[0].x = touch.current.x;
+        prevPoint[0].y = touch.current.y;
     } );
     
     
