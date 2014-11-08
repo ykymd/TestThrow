@@ -11,18 +11,12 @@ var createResultScene = function(game) {
     hline.context.stroke();
 
     var correct = new MutableText(20, 120, 1000);
-    correct.originX = 0;
-    correct.originY = 0;
-    correct.scaleX = 2;
-    correct.scaleY = 2;
+    correct.fontSize = 32;
     correct.setText('CORRECT');
     scene.addChild(correct);
 
     var correctScore = new MutableText(120, 150, 100);
-    correctScore.originX = 0;
-    correctScore.originY = 0;
-    correctScore.scaleX = 2;
-    correctScore.scaleY = 2;
+    correctScore.fontSize = 32;
     correctScore.setText('' + score.correct + '/100');
     scene.addChild(correctScore);
 
@@ -32,18 +26,12 @@ var createResultScene = function(game) {
     scene.addChild(correctBaseline);
 
     var fail = new MutableText(20, 220, 1000);
-    fail.originX = 0;
-    fail.originY = 0;
-    fail.scaleX = 2;
-    fail.scaleY = 2;
+    fail.fontSize = 32;
     fail.setText('FAIL');
     scene.addChild(fail);
 
     var failScore = new MutableText(120, 250, 100);
-    failScore.originX = 0;
-    failScore.originY = 0;
-    failScore.scaleX = 2;
-    failScore.scaleY = 2;
+    failScore.fontSize = 32;
     failScore.setText('' + score.fail + '/100');
     scene.addChild(failScore);
 
