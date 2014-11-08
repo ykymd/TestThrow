@@ -2,7 +2,20 @@ var createMainScene = function( game ) {
     
     // initialize
     var scene = new Scene();
-    scene.backgroundColor = '#00F';
+    
+    var bgImage = new Sprite( 1280, 1920 );
+    bgImage.image = game.assets['./img/trash.png'];
+    bgImage.originX = 0;
+    bgImage.originY = 0;
+    bgImage.scaleX = ( game.width / bgImage.width );
+    bgImage.scaleY = ( game.height/ bgImage.height );
+    bgImage.moveTo(0,0);
+    scene.addChild(bgImage);
+    
+    var bgRayer = new Sprite( game.width, game.height );
+    bgRayer.backgroundColor = '#FFF';
+    bgRayer.opacity = 0.5;
+    scene.addChild(bgRayer);
     
     const PAPER_X = 60;
     const PAPER_Y = 90;
@@ -22,10 +35,11 @@ var createMainScene = function( game ) {
     paper.pic.frame = Paper_frame.ALC;
     paper.pic.originX = 0;
     paper.pic.originY = 0;
-    paper.pic.scaleX = ( PAPER_W/PAPER_IMG_W );
-    paper.pic.scaleY = ( PAPER_H/PAPER_IMG_H );
+    paper.pic.scaleX = ( PAPER_W / PAPER_IMG_W );
+    paper.pic.scaleY = ( PAPER_H / PAPER_IMG_H );
     paper.pic.moveTo(PAPER_X,PAPER_Y);
     scene.addChild(paper.pic);
+    
     
     function TouchProperty() {
         this.x = 0;
