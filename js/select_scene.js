@@ -7,7 +7,7 @@ var createSelectScene = function(game) {
                   game.assets['./img/2-1.png'], game.assets['./img/2-2.png'],
                   game.assets['./img/3-1.png'], game.assets['./img/3-2.png'],
                   game.assets['./img/4-1.png'], game.assets['./img/4-2.png']];
-    var numOfStages = 8;
+    var numOfStages = (localStorage.stages) ? localStorage.stages : 1;
     var buttons = new Group();
     var size = { 'width': 225, 'height': 100 };
     var margin = 30;
@@ -56,13 +56,13 @@ var createSelectScene = function(game) {
                            pressedButton = null;
                            }
                            buttons.y = startY + e.y - touchPosition.y;
-                           if (buttons.y > 0) { buttons.y = 0; }
                            if (buttons.y < game.height - buttons.height) { buttons.y = game.height - buttons.height; }
+                           if (buttons.y > 0) { buttons.y = 0; }
                            }
                            });
     scene.addEventListener(Event.TOUCH_END, function(e) {
                            touchPosition = null;
                            });
-    
+
     return scene;
 };
