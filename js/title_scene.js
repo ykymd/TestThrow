@@ -8,7 +8,7 @@ var createTitleScene = function(game) {
     scene.addChild(label);
 
     scene.addEventListener('touchend', function() {
-                           game.pushScene(createSelectScene());
+                           game.pushScene(createSelectScene(game));
                            });
 
 	return scene;
