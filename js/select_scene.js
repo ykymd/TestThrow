@@ -27,8 +27,8 @@ var createSelectScene = function(game) {
                                 curtain.backgroundColor = '#0';
                                 curtain.opacity = 0;
                                 curtain.tl.fadeIn(.25 * game.fps).exec(function(){
-                                game.removeScene(scene);
-                                game.replaceScene(createMainScene(game));
+                                                                       game.removeScene(scene);
+                                                                       game.replaceScene(createMainScene(game));
                                                                        });
                                 scene.addChild(curtain);
                                 });
@@ -44,8 +44,10 @@ var createSelectScene = function(game) {
 
     buttons.height = numOfStages * (size.height + margin) + margin;
     var touchPosition;
+    var startY;
     scene.addEventListener(Event.TOUCH_START, function(e) {
                            touchPosition = e;
+                           startY = buttons.y;
                            });
     scene.addEventListener(Event.TOUCH_MOVE, function(e) {
                            if (touchPosition) {
@@ -53,8 +55,7 @@ var createSelectScene = function(game) {
                            pressedButton.up();
                            pressedButton = null;
                            }
-                           buttons.moveBy(0, e.y - touchPosition.y);
-                           touchPosition = e;
+                           buttons.y = startY + e.y - touchPosition.y;
                            if (buttons.y > 0) { buttons.y = 0; }
                            if (buttons.y < game.height - buttons.height) { buttons.y = game.height - buttons.height; }
                            }
@@ -62,6 +63,6 @@ var createSelectScene = function(game) {
     scene.addEventListener(Event.TOUCH_END, function(e) {
                            touchPosition = null;
                            });
-
+    
     return scene;
 };
