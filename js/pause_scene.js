@@ -48,6 +48,7 @@ var createPauseScene = function(game) {
     back.scaleY = size.height / back_image.height;
     back.moveTo((game.width - size.width) / 2, (game.height - size.height - gap) / 2 + gap / 2);
     back.addEventListener('tap', function() {
+                          game.removeScene(scene);
                           game.replaceScene(createTitleScene(game));
                           });
     scene.addChild(back);
