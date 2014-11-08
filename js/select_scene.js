@@ -1,14 +1,22 @@
 var createSelectScene = function(game) {
     console.log("Select Scene");
     var scene = new Scene();
-    scene.backgroundColor = '#FFF';
+    scene.backgroundColor = '#0DD';
 
+    var images = [game.assets['./img/1-1.png'], game.assets['./img/1-2.png'],
+                  game.assets['./img/2-1.png'], game.assets['./img/2-2.png']];
     var numOfStages = 8;
     var buttons = new Group();
-    var size = { 'width': 240, 'height': 90 };
+    var size = { 'width': 225, 'height': 100 };
     var margin = 30;
     for (var i = 0; i < numOfStages; i++) {
-        var sprite = new Sprite(size.width, size.height);
+        var image = images[i % images.length];
+        var sprite = new Sprite(image.width, image.height);
+        sprite.image = image;
+        sprite.originX = 0;
+        sprite.originY = 0;
+        sprite.scaleX = size.width / image.width;
+        sprite.scaleY = size.height / image.height;
         sprite.backgroundColor = '#0' + i + i;
         sprite.moveTo((game.width - size.width) / 2, i * (size.height + margin) + margin);
         buttons.addChild(sprite);
