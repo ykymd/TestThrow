@@ -1,6 +1,6 @@
 var createTitleScene = function(game) {
-	console.log("Title Scene");
-	var scene = new Scene();
+    console.log("Title Scene");
+    var scene = new Scene();
 
     var label = new Label('Title Scene');
     label.color = '#FFF';
@@ -11,5 +11,5 @@ var createTitleScene = function(game) {
                            game.pushScene(createSelectScene(game));
                            });
 
-	return scene;
+    return scene;
 };
