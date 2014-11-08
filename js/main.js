@@ -10,7 +10,7 @@ window.onload = function() {
                  './img/3-1.png', './img/3-2.png', './img/4-1.png', './img/4-2.png');
 
     game.onload = function() {
-        game.replaceScene(createResultScene(game));
+        game.replaceScene(createTitleScene(game));
     };
     game.start();
 };
