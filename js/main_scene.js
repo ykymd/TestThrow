@@ -4,12 +4,27 @@ var createMainScene = function( game ) {
     var scene = new Scene();
     scene.backgroundColor = '#00F';
     
-    var paper = { 'pic': new Sprite( 200, 300 ) ,
+    const PAPER_X = 60;
+    const PAPER_Y = 90;
+    const PAPER_W = 200;
+    const PAPER_H = 300;
+    const PAPER_IMG_W = 400;
+    const PAPER_IMG_H = 600;
+    const Paper_frame = { 'CRASH':4,
+                          'ALC':2,
+                          'MATH':1,
+                          'REPORT':3,
+                          'SAIRI':0 };
+    var paper = { 'pic': new Sprite( PAPER_IMG_W, PAPER_IMG_H ) ,
                   'wasted': false ,
                   'score': 0 };
     paper.pic.image = game.assets['./img/paper.png'];
-    paper.pic.moveTo(60,90);
-    paper.pic.backgroundColor = "#FFF";
+    paper.pic.frame = Paper_frame.ALC;
+    paper.pic.originX = 0;
+    paper.pic.originY = 0;
+    paper.pic.scaleX = ( PAPER_W/PAPER_IMG_W );
+    paper.pic.scaleY = ( PAPER_H/PAPER_IMG_H );
+    paper.pic.moveTo(PAPER_X,PAPER_Y);
     scene.addChild(paper.pic);
     
     function TouchProperty() {
@@ -21,6 +36,7 @@ var createMainScene = function( game ) {
     
     
     var touched = false;
+    var touching = false;
     var touch = { 'begin': new TouchProperty(),
                   'end': new TouchProperty(),
                   'current': new TouchProperty()};
@@ -39,6 +55,7 @@ var createMainScene = function( game ) {
         touch.begin.time = (new Date()).getTime();
         touch.current.x = e.x;
         touch.current.y = e.y;
+        touching = true;
     } );
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
         touch.current.x = e.x;
@@ -48,8 +65,11 @@ var createMainScene = function( game ) {
         touch.end.x = e.x;
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
+        touching = false;
         if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y ) {
             touched = true;
+        } else {
+            
         }
     } );
     
@@ -57,8 +77,11 @@ var createMainScene = function( game ) {
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
         if ( touched == true ) {
             paper.wasted = true;
-            paper.pic.image = game.assets['./img/waste.png'];
+            paper.pic.frame = Paper_frame.CRASH;
             touched = false;
+        }
+        if ( touching == true ) {
+            paper.pic.moveTo ( PAPER_X + touch.current.x - touch.begin.x,  PAPER_Y + touch.current.y - touch.begin.y );
         }
     } );
     
