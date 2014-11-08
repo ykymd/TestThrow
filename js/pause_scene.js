@@ -4,15 +4,39 @@ var Button = Class.create(Sprite, {
                           this.pressed = false;
 
                           this.addEventListener(Event.TOUCH_START, function(e) {
-                                                this.pressed = true;
+                                                this.down();
                                                 });
                           this.addEventListener(Event.TOUCH_MOVE, function(e) {
-                                                if (e.localX < 0 || e.localX > this.width || e.localY < 0 || e.localY > this.height) this.pressed = false;
+                                                if (e.localX < 0 || e.localX > this.width || e.localY < 0 || e.localY > this.height) {
+                                                this.up();
+                                                }
                                                 });
                           this.addEventListener(Event.TOUCH_END, function(e) {
-                                                if (this.pressed == true) this.dispatchEvent(new enchant.Event('tap'));
+                                                if (this.pressed == true) {
+                                                this.dispatchEvent(new enchant.Event('tap'));
+                                                this.up();
+                                                }
                                                 });
-                          }});
+                          },
+                          down: function(){
+                          var pressedImage = this.image.clone();
+                          var pixels = pressedImage.context.getImageData(0, 0, pressedImage.width, pressedImage.height);
+                          var d = pixels.data;
+                          for (var i = 0; i < d.length; i+=4) {
+                          d[i] *= 0.5;
+                          d[i+1] *= 0.5;
+                          d[i+2] *= 0.5;
+                          }
+                          pressedImage.context.putImageData(pixels, 0, 0);
+                          this.overImage = this.image;
+                          this.image = pressedImage;
+                          this.pressed = true;
+                          },
+                          up: function() {
+                          this.pressed = false;
+                          this.image = this.overImage;
+                          }
+                          });
 
 var createPauseScene = function(game) {
     console.log("Pause Scene");
