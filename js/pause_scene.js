@@ -19,6 +19,8 @@ var Button = Class.create(Sprite, {
                                                 });
                           },
                           down: function(){
+                          this.pressed = true;
+                          return;
                           var pressedImage = this.image.clone();
                           var pixels = pressedImage.context.getImageData(0, 0, pressedImage.width, pressedImage.height);
                           var d = pixels.data;
@@ -30,10 +32,10 @@ var Button = Class.create(Sprite, {
                           pressedImage.context.putImageData(pixels, 0, 0);
                           this.overImage = this.image;
                           this.image = pressedImage;
-                          this.pressed = true;
                           },
                           up: function() {
                           this.pressed = false;
+                          return;
                           this.image = this.overImage;
                           }
                           });
