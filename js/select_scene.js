@@ -11,9 +11,10 @@ var createSelectScene = function(game) {
     var buttons = new Group();
     var size = { 'width': 225, 'height': 100 };
     var margin = 30;
+    var pressedButton = null;
     for (var i = 0; i < numOfStages; i++) {
         var image = images[i];
-        var sprite = new Sprite(image.width, image.height);
+        var sprite = new Button(image.width, image.height);
         sprite.image = image;
         sprite.originX = 0;
         sprite.originY = 0;
@@ -21,6 +22,11 @@ var createSelectScene = function(game) {
         sprite.scaleY = size.height / image.height;
         sprite.backgroundColor = '#0' + i + i;
         sprite.moveTo((game.width - size.width) / 2, i * (size.height + margin) + margin);
+        sprite.addEventListener('tap', function() {
+                                game.removeScene(scene);
+                                game.replaceScene(createMainScene(game));
+                                });
+        sprite.addEventListener(Event.TOUCH_START, function() { pressedButton = this; });
         buttons.addChild(sprite);
     }
     scene.addChild(buttons);
@@ -37,6 +43,10 @@ var createSelectScene = function(game) {
                            });
     scene.addEventListener(Event.TOUCH_MOVE, function(e) {
                            if (touchPosition) {
+                           if (pressedButton) {
+                           pressedButton.up();
+                           pressedButton = null;
+                           }
                            buttons.moveBy(0, e.y - touchPosition.y);
                            touchPosition = e;
                            if (buttons.y > 0) { buttons.y = 0; }
