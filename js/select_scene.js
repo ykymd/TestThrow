@@ -23,6 +23,11 @@ var createSelectScene = function(game) {
     }
     scene.addChild(buttons);
 
+    var curtain = new Sprite(game.width, game.height);
+    curtain.backgroundColor = '#000';
+    curtain.tl.fadeOut(.25 * game.fps).removeFromScene();
+    scene.addChild(curtain);
+
     buttons.height = numOfStages * (size.height + margin) + margin;
     var touchPosition;
     scene.addEventListener(Event.TOUCH_START, function(e) {
