@@ -116,7 +116,7 @@ var createMainScene = function( game ) {
             newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
             console.log(newPaperImg.frame);
             console.log("thrown");
-            
+
             paper.pic.tl.moveBy( 0, velocity*0.66*game.fps, Math.floor(0.66*game.fps) );
             newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
                           .delay(2)
@@ -133,7 +133,7 @@ var createMainScene = function( game ) {
             velocity = touch.end.x - prevPoint[1].x;
             newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
             console.log("got");
-            
+
             paper.pic.tl.moveBy( velocity*0.66*game.fps, 0, Math.floor(0.66*game.fps) );
             newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
                           .delay(2)
