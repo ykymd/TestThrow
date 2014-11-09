@@ -6,6 +6,7 @@ window.onload = function() {
     game.preload(IMG_PAPER, IMG_TRASH,
                  IMG_TITLE,
                  BTN_PAUSE,
+                 IMG_MARK,
                  BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
                  SELECT_MENU,
                  IMG_MARK_CIRCLE, IMG_MARK_X,

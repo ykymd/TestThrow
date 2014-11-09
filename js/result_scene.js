@@ -3,6 +3,9 @@ var createResultScene = function(game) {
     var score = {'correct': 0, 'fail': 0, 'gpa': 0.0};
     var scene = new Scene();
 
+    var markImage = game.assets[IMG_MARK];
+    console.log("image loaded");
+    
     var hline = new Surface(300, 1);
     hline.lineWidth = 1;
     hline.context.beginPath();
@@ -25,16 +28,18 @@ var createResultScene = function(game) {
     correctBaseline.image = hline;
     scene.addChild(correctBaseline);
 
-    var correctImage = game.assets[IMG_GAMESTART];
     var size = {'width': 90, 'height': 66};
-    var correctMark = new Sprite(correctImage.width, correctImage.height);
-    correctMark.image = correctImage;
+    var correctMark = new Sprite( MARK_IMG_WIDTH, MARK_IMG_HEIGHT );
+    correctMark.image = markImage;
+    correctMark.frame = 2;
     correctMark.originX = 0;
     correctMark.originY = 0;
-    correctMark.scaleX = size.width / correctImage.width;
-    correctMark.scaleY = size.height / correctImage.height;
+    correctMark.scaleX = size.width / MARK_IMG_WIDTH;
+    correctMark.scaleY = size.height / MARK_IMG_HEIGHT;
     correctMark.moveTo(0, 130);
     scene.addChild(correctMark);
+    
+    console.log("correct image loaded");
 
     var fail = new MutableText(180, 220, 1000);
     fail.fontSize = 32;
@@ -51,16 +56,18 @@ var createResultScene = function(game) {
     failBaseline.image = hline;
     scene.addChild(failBaseline);
 
-    var failImage = game.assets['./img/mark_x.png'];
+    var failMark = new Sprite( MARK_IMG_WIDTH, MARK_IMG_HEIGHT );
     var size = {'width': 90, 'height': 66};
-    var failMark = new Sprite(failImage.width, failImage.height);
-    failMark.image = failImage;
+    failMark.image = markImage;
+    failMark.frame = 0;
     failMark.originX = 0;
     failMark.originY = 0;
-    failMark.scaleX = size.width / failImage.width;
-    failMark.scaleY = size.height / failImage.height;
+    failMark.scaleX = size.width / MARK_IMG_WIDTH;
+    failMark.scaleY = size.height / MARK_IMG_HEIGHT;
     failMark.moveTo(0, 230);
     scene.addChild(failMark);
+    
+    console.log("fail image loaded");
 
     var gpa = new MutableText(40, 400, 100);
     gpa.fontSize = 32;
