@@ -189,5 +189,35 @@ var createMainScene = function( game ) {
     scene.addChild(pauseButton);
     scene.addChild(debugLabel);
 
+    var timerCircleRadius = 30;
+    var timerCircleSurface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    var timerCircle = new Sprite(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    timerCircle.image = timerCircleSurface;
+    timerCircle.moveTo(250, 10);
+    timerCircleSurface.context.beginPath();
+    timerCircleSurface.context.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, 0, 2 * Math.PI);
+    timerCircleSurface.context.fillStyle = '#CCF';
+    timerCircleSurface.context.fill();
+    timerCircleSurface.context.stroke();
+    var timerArc = new Sprite(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    timerArc.moveTo(250, 10);
+
+    var startFrame = game.frame;
+    timerCircle.tl.repeat(function() {
+                          var currentTime = game.frame;
+                          var surface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+                          var ctx = surface.context;
+                          ctx.moveTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                          ctx.lineTo(timerCircleRadius + 1, 1);
+                          ctx.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, -0.5 * Math.PI, -0.48 * Math.PI + 2 * Math.PI * (currentTime - startFrame) / (30 * game.fps));
+                          ctx.lineTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                          ctx.fillStyle = '#FCC';
+                          ctx.fill();
+                          ctx.stroke();
+                          timerArc.image = surface;
+                          }, 30 * game.fps);
+    scene.addChild(timerCircle);
+    scene.addChild(timerArc);
+
     return scene;
 };
