@@ -8,7 +8,7 @@ window.onload = function() {
                  BTN_PAUSE,
                  BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
                  SELECT_MENU,
-                 './img/mark_x.png', './img/mark_circle.png',
+                 IMG_MARK_CIRCLE, IMG_MARK_X,
                  SND_THROW);
 
     game.onload = function() {
