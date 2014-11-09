@@ -4,7 +4,7 @@
 var IMG_PAPER = './img/paper.png';  //紙の画像
 var IMG_TRASH = './img/trash.png';  //ゴミ箱の背景画像
 
-var IMG_TITLE = './img/title_1.png'; //タイトルの画像
+var IMG_TITLE = './img/title.png'; //タイトルの画像
 var BTN_PAUSE = './img/pause.png';
 var BTN_PAUSEMENU = ['./img/pause_continue.png', './img/pause_giveup.png'];
 var SELECT_MENU = './img/1-1.png';
