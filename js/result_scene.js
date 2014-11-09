@@ -25,7 +25,7 @@ var createResultScene = function(game) {
     correctBaseline.image = hline;
     scene.addChild(correctBaseline);
 
-    var correctImage = game.assets['./img/mark_circle.png'];
+    var correctImage = game.assets[IMG_GAMESTART];
     var size = {'width': 90, 'height': 66};
     var correctMark = new Sprite(correctImage.width, correctImage.height);
     correctMark.image = correctImage;

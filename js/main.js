@@ -9,6 +9,7 @@ window.onload = function() {
                  BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
                  SELECT_MENU,
                  IMG_MARK_CIRCLE, IMG_MARK_X,
+                 IMG_GAMESTART,
                  SND_THROW);
 
     game.onload = function() {

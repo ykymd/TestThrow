@@ -16,6 +16,8 @@ var createMainScene = function( game ) {
     bgRayer.backgroundColor = '#FFF';
     bgRayer.opacity = 0.5;
 
+    isGameStart = false;    //ゲーム開始中か？
+
     const PAPER_DEFAULT_X = 60;
     const PAPER_DEFAULT_Y = 90;
     const PAPER_W = 200;
@@ -67,9 +69,11 @@ var createMainScene = function( game ) {
     var from = new TouchProperty();
     var velocity = 0;
     const THRS = 4;
-    
+
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
+        //if (!isGameStart) return;
+
         touch.begin.x = e.x;
         touch.begin.y = e.y;
         touch.begin.time = (new Date()).getTime();
@@ -87,6 +91,8 @@ var createMainScene = function( game ) {
         }
     } );
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
+        //if (!isGameStart) return;
+
         touch.current.x = e.x;
         touch.current.y = e.y;
         if ( touching == true ) {
@@ -98,6 +104,8 @@ var createMainScene = function( game ) {
         }
     } );
     scene.addEventListener( Event.TOUCH_END, function(e) {
+        //if (!isGameStart) return;
+
         touch.end.x = e.x;
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
@@ -149,6 +157,8 @@ var createMainScene = function( game ) {
     } );
 
     scene.addEventListener( Event.ENTER_FRAME, function(e) {
+        //if (!isGameStart) return;
+
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
         for ( var i = PREV_COUNT-1; i > 0; i-- ) {
             prevPoint[i].x = prevPoint[i-1].x;
@@ -156,12 +166,26 @@ var createMainScene = function( game ) {
         }
         prevPoint[0].x = touch.current.x;
         prevPoint[0].y = touch.current.y;
-        if ( touching == false && 
+        if ( touching == false &&
              ( paper.pic.x != PAPER_DEFAULT_X || paper.pic.y != PAPER_DEFAULT_Y ) &&
              paper.state != "throw" && paper.state != "get" ){
             paper.pic.moveTo ( (paper.pic.x + PAPER_DEFAULT_X)/2,  (paper.pic.y + PAPER_DEFAULT_Y)/2 );
         }
     } );
+
+    //"START"の文字の表示
+    var l_start = new Sprite(GAMESTART_IMG_WIDTH,GAMESTART_IMG_HEIGHT);
+    var labelSize = {'width': 320, 'height': 80};
+    l_start.image = game.assets[IMG_GAMESTART];
+    l_start.scaleX = labelSize.width / GAMESTART_IMG_WIDTH;
+    l_start.scaleY = labelSize.height / GAMESTART_IMG_HEIGHT;
+    l_start.moveTo(0,game.width/2-GAMESTART_IMG_HEIGHT/2);
+    l_start.tl.rotateTo(45,1).scaleTo(5,1).scaleTo(0.9,20).and().rotateTo(0,20).delay(10).fadeOut(10).and().moveBy(0,-50,10).then(function(){
+            l_start.visible = false;
+            this.isGameStart = true;
+            //player.canclick = true;
+            this.parentNode.removeChild(l_start);
+        });
 
 
     // pause menu
@@ -177,7 +201,7 @@ var createMainScene = function( game ) {
     pauseButton.addEventListener('tap', function() {
                                  game.pushScene(createPauseScene(game));
                                  });
-    
+
     // drawing
     scene.addChild(bgImage);
     scene.addChild(bgRayer);
@@ -185,6 +209,7 @@ var createMainScene = function( game ) {
     scene.addChild(newPaperImg);
     scene.addChild(pauseButton);
     scene.addChild(debugLabel);
+    scene.addChild(l_start);
 
     return scene;
 };
