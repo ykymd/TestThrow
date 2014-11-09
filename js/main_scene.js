@@ -31,9 +31,12 @@ var createMainScene = function( game ) {
                           'SAIRI':0 };
     var paper = {
         sprite: null,
-        'state': "new",
-        'numOfQuestion': 3,
-        'score': 0
+        state: "new",
+        numOfQuestion: 3,
+        score: 0,
+        isSuccessed: function() {
+            return score;
+        }
     };
 
     function TouchProperty() {
@@ -184,11 +187,11 @@ var createMainScene = function( game ) {
 
             flySound.play();    //効果音を再生
 
-            if (!paper.score) {
+            if (!paper.isSuccessed()) {
                 scores.ng++;
             }
 
-            if (paper.score) {
+            if (paper.isSuccessed()) {
                 scores.okMax++;
             } else {
                 scores.ngMax++;
@@ -204,11 +207,11 @@ var createMainScene = function( game ) {
 
             passSound.play();    //効果音を再生
 
-            if (paper.score) {
+            if (paper.isSuccessed()) {
                 scores.ok++;
             }
 
-            if (paper.score) {
+            if (paper.isSuccessed()) {
                 scores.okMax++;
             } else {
                 scores.ngMax++;
