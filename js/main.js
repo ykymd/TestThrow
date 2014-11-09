@@ -11,7 +11,8 @@ window.onload = function() {
                  IMG_MARK_CIRCLE, IMG_MARK_X,
                  IMG_GAMESTART,
                  IMG_GAMEOVER,
-                 SND_THROW);
+                 SND_THROW,
+                 SND_WASTE);
 
     game.onload = function() {
         game.replaceScene(createTitleScene(game));

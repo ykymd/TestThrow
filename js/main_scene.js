@@ -59,6 +59,8 @@ var createMainScene = function( game ) {
     const MOVE_TIME = 0.4;
     const VELOCITY = -130;
 
+    var wasteSound = game.assets[SND_WASTE];    //クシャっとするときの効果音
+
     // game main
     paper.pic.addEventListener( Event.TOUCH_START, function(e) {
         //if (!isGameStart) return;
@@ -102,6 +104,7 @@ var createMainScene = function( game ) {
         if ( !moved ) {
             paper.state = "wasted";
             paper.pic.frame = Paper_frame.CRASH;
+            wasteSound.play();
             return;
         }
 
@@ -178,7 +181,7 @@ var createMainScene = function( game ) {
     l_over.moveTo(game.width,game.height/2-l_over.height/2);
     l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
         l_over.visible = false;
-        game.replaceScene(createResultScene(game));
+        //game.replaceScene(createResultScene(game));
     });
 
     // pause menu
