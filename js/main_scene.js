@@ -34,16 +34,17 @@ var createMainScene = function( game ) {
                   'score': 0 };
     paper.pic.image = game.assets[IMG_PAPER];
     paper.pic.frame = Paper_frame.ALC;
-    // paper.pic.originX = 0;
-    // paper.pic.originY = 0;
-    // paper.pic.scaleX = ( PAPER_W / PAPER_IMG_W );
-    // paper.pic.scaleY = ( PAPER_H / PAPER_IMG_H );
     paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
 
     var newPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
     newPaperImg.image = game.assets[IMG_PAPER];
     newPaperImg.frame = Paper_frame.ALC;
     newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+
+    var oldPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
+    oldPaperImg.image = game.assets[IMG_PAPER];
+    oldPaperImg.frame = Paper_frame.ALC;
+    oldPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
 
     function TouchProperty() {
         this.x = 0;
@@ -67,8 +68,9 @@ var createMainScene = function( game ) {
         prevPoint[i] = new TouchProperty();
     }
     var from = new TouchProperty();
-    var velocity = 0;
-    const THRS = 4;
+    const THRS = 6;
+    const MOVE_TIME = 0.4;
+    const VELOCITY = -130;
 
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
@@ -120,38 +122,34 @@ var createMainScene = function( game ) {
 
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
-            velocity = touch.end.y - prevPoint[1].y;
-            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
-            console.log(newPaperImg.frame);
             console.log("thrown");
 
-            paper.pic.tl.moveBy( 0, velocity*0.66*game.fps, Math.floor(0.66*game.fps) );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
-                          .delay(2)
-                          .exec( function() {
-                              paper.state = "new";
-                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.frame = newPaperImg.frame;
-                              console.log("new paper supplied");
-                          });
+
+            oldPaperImg.frame = paper.pic.frame;
+            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+
+            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+            paper.state = "new";
+
+            oldPaperImg.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
+            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+
         }
         if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
-            velocity = touch.end.x - prevPoint[1].x;
-            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
             console.log("got");
 
-            paper.pic.tl.moveBy( velocity*0.66*game.fps, 0, Math.floor(0.66*game.fps) );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
-                          .delay(2)
-                          .exec( function() {
-                              paper.state = "new";
-                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.frame = newPaperImg.frame;
-                              console.log("new paper supplied");
-                          });
+            oldPaperImg.frame = paper.pic.frame;
+            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+
+            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+            paper.state = "new";
+
+            oldPaperImg.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
+            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+
         }
 
     } );
@@ -206,10 +204,54 @@ var createMainScene = function( game ) {
     scene.addChild(bgImage);
     scene.addChild(bgRayer);
     scene.addChild(paper.pic);
+    scene.addChild(oldPaperImg);
     scene.addChild(newPaperImg);
     scene.addChild(pauseButton);
     scene.addChild(debugLabel);
     scene.addChild(l_start);
+
+    var timerCircleRadius = 30;
+    var timerCircleSurface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    var timerCircle = new Sprite(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    timerCircle.image = timerCircleSurface;
+    timerCircle.moveTo(250, 10);
+    timerCircleSurface.context.beginPath();
+    timerCircleSurface.context.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, 0, 2 * Math.PI);
+    timerCircleSurface.context.fillStyle = '#CCF';
+    timerCircleSurface.context.fill();
+    timerCircleSurface.context.stroke();
+    var timerArc = new Sprite(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+    timerArc.moveTo(250, 10);
+
+    var timerScore = new MutableText(250 - 30, 10 + 18, 100);
+    timerScore.fontSize = 32;
+    timerScore.scaleX = .5;
+
+    var startFrame = game.frame;
+    timerCircle.tl.repeat(function() {
+                          var currentTime = game.frame;
+                          var surface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+                          var ctx = surface.context;
+                          ctx.moveTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                          ctx.lineTo(timerCircleRadius + 1, 1);
+                          ctx.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, -0.5 * Math.PI, -0.48 * Math.PI + 2 * Math.PI * (currentTime - startFrame) / (30 * game.fps));
+                          ctx.lineTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                          ctx.fillStyle = '#FCC';
+                          ctx.fill();
+                          ctx.stroke();
+                          timerArc.image = surface;
+
+                          var seconds = Math.floor((30 * game.fps - (currentTime - startFrame)) / game.fps);
+                          if (seconds < 10) {
+                          timerScore.scaleX = 1.0;
+                          timerScore.x = 250 + 18;
+                          }
+                          timerScore.setText(seconds.toFixed(0));
+                          }, 30 * game.fps);
+
+    scene.addChild(timerCircle);
+    scene.addChild(timerArc);
+    scene.addChild(timerScore);
 
     return scene;
 };
