@@ -10,6 +10,7 @@ window.onload = function() {
                  BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
                  SELECT_MENU,
                  IMG_MARK_CIRCLE, IMG_MARK_X,
+                 IMG_BACK,
                  IMG_GAMESTART,
                  IMG_GAMEOVER,
                  SND_THROW,

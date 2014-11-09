@@ -13,6 +13,7 @@ const IMG_MARK_CIRCLE = './img/mark_circle.png';
 const IMG_MARK_X = './img/mark_x.png';
 const IMG_GAMESTART = './img/gamestart.png';
 const IMG_GAMEOVER = './img/gameover.png';
+const IMG_BACK = './img/cursor_left.png';
 
 const SELECT_BTN_WIDTH = 900;
 const SELECT_BTN_HEIGHT = 400;
@@ -22,6 +23,8 @@ const MARK_IMG_WIDTH = 300;
 const MARK_IMG_HEIGHT = 220;
 const GAMESTART_IMG_WIDTH = 320;
 const GAMESTART_IMG_HEIGHT = 80;
+const BACK_IMG_WIDTH = 150;
+const BACK_IMG_HEIGHT = 150;
 
 //効果音
 const SND_THROW = './sound/sei_ge_gomibako02.mp3';
