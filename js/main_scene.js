@@ -65,7 +65,7 @@ var createMainScene = function( game ) {
 
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
-        //if (!isGameStart) return;
+        if (!isGameStart) return;
         if (e.y < 60) return;
 
         touch.begin.x = e.x;
