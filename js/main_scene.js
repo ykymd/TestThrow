@@ -148,7 +148,7 @@ var createMainScene = function( game ) {
 
             placeNewPaper();
         } else {
-            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(.25*game.fps));
+            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(.25*game.fps), enchant.Easing.QUINT_EASEOUT);
         }
 
     } );
