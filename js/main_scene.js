@@ -64,8 +64,9 @@ var createMainScene = function( game ) {
     var startFrame;
 
     // game main
-    paper.pic.addEventListener( Event.TOUCH_START, function(e) {
+    scene.addEventListener( Event.TOUCH_START, function(e) {
         //if (!isGameStart) return;
+        if (e.y < 60) return;
 
         touch.begin.x = e.x;
         touch.begin.y = e.y;
@@ -81,8 +82,9 @@ var createMainScene = function( game ) {
         touching = true;
         moved = false;
     } );
-    paper.pic.addEventListener( Event.TOUCH_MOVE, function(e) {
+    scene.addEventListener( Event.TOUCH_MOVE, function(e) {
         //if (!isGameStart) return;
+        if (!touching) return;
 
         touch.current.x = e.x;
         touch.current.y = e.y;
@@ -102,8 +104,9 @@ var createMainScene = function( game ) {
         prevPoint[0].x = touch.current.x;
         prevPoint[0].y = touch.current.y;
     } );
-    paper.pic.addEventListener( Event.TOUCH_END, function(e) {
+    scene.addEventListener( Event.TOUCH_END, function(e) {
         //if (!isGameStart) return;
+        if (!touching) return;
 
         touching = false;
         touch.end.x = e.x;
