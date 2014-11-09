@@ -156,7 +156,7 @@ var createMainScene = function( game ) {
 
 
     // pause menu
-    var pauseImage = game.assets[IMG_PAPER];
+    var pauseImage = game.assets[BTN_PAUSE];
     var pauseSize = {'width': 60, 'height': 60};
     var pauseButton = new Button(pauseImage.width, pauseImage.height);
     pauseButton.image = pauseImage;
