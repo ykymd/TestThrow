@@ -150,6 +150,9 @@ var createMainScene = function( game ) {
         prevPoint[0].y = touch.current.y;
     } );
     scene.addEventListener( Event.TOUCH_END, function(e) {
+        // for debug
+        // gameOver();
+        
         //if (!isGameStart) return;
         if (!touching) return;
 
