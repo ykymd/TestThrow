@@ -59,6 +59,13 @@ var createMainScene = function( game ) {
     const MOVE_TIME = 0.4;
     const VELOCITY = -130;
 
+    var scores = {
+        ok: 0,
+        okMax: 0,
+        ng: 0,
+        ngMax: 0
+    };
+
     var wasteSound = game.assets[SND_WASTE];    //クシャっとするときの効果音
     var flySound = game.assets[SND_FLY];
     var passSound = game.assets[SND_PASS];
@@ -79,7 +86,7 @@ var createMainScene = function( game ) {
 
         paper.state = "new";
 
-        paper.score = Math.random(1) > 0.5;
+        paper.score = Math.random(1) < 0.5;
         for (var i = 0; i < paper.numOfQuestion; i++) {
             var size = {'width': 60, 'height': 44};
             var image = (paper.score) ? markOk : markNg;
@@ -92,6 +99,12 @@ var createMainScene = function( game ) {
             sprite.moveTo(20, i * 80 + 20);
 
             paper.sprite.addChild(sprite);
+        }
+
+        if (paper.score) {
+            scores.okMax++;
+        } else {
+            scores.ngMax++;
         }
 
         scene.addChild(paper.sprite);
@@ -177,6 +190,10 @@ var createMainScene = function( game ) {
 
             flySound.play();    //効果音を再生
 
+            if (!paper.score) {
+                scores.ng++;
+            }
+
             placeNewPaper();
         } else if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
@@ -186,6 +203,10 @@ var createMainScene = function( game ) {
             sprite.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
 
             passSound.play();    //効果音を再生
+
+            if (paper.score) {
+                scores.ok++;
+            }
 
             placeNewPaper();
         } else {
@@ -224,6 +245,7 @@ var createMainScene = function( game ) {
     var gameOver = function() {
         l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
             l_over.visible = false;
+            game.scores = scores;
             game.replaceScene(createResultScene(game));
         });
         isGameStart = false;

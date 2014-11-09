@@ -1,6 +1,10 @@
 
 var createResultScene = function(game) {
-    var score = {'correct': 0, 'fail': 0, 'gpa': 0.0};
+    var score = {
+        'correct': game.scores.ok,
+        'fail': game.scores.ng,
+        'gpa': 4.0 * (game.scores.ok + game.scores.ng) / (game.scores.okMax + game.scores.ngMax)
+    };
     var scene = new Scene();
 
     var markImage = game.assets[IMG_MARK];
@@ -20,7 +24,7 @@ var createResultScene = function(game) {
 
     var correctScore = new MutableText(120, 155, 100);
     correctScore.fontSize = 32;
-    correctScore.setText('' + score.correct + '/100');
+    correctScore.setText('' + score.correct + '/' + game.scores.okMax.toFixed(0));
     scene.addChild(correctScore);
 
     var correctBaseline = new Sprite(300, 1);
@@ -48,7 +52,7 @@ var createResultScene = function(game) {
 
     var failScore = new MutableText(120, 255, 100);
     failScore.fontSize = 32;
-    failScore.setText('' + score.fail + '/100');
+    failScore.setText('' + score.fail + '/' + game.scores.ngMax.toFixed(0));
     scene.addChild(failScore);
 
     var failBaseline = new Sprite(300, 1);
