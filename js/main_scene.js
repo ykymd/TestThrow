@@ -66,9 +66,9 @@ var createMainScene = function( game ) {
         prevPoint[i] = new TouchProperty();
     }
     var from = new TouchProperty();
-    var velocity = 0;
-    const THRS = 16;
-    const MOVE_TIME = 1.00;
+    const THRS = 6;
+    const MOVE_TIME = 0.4;
+    const VELOCITY = -130;
     
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
@@ -114,8 +114,6 @@ var createMainScene = function( game ) {
 
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
-            velocity = touch.end.y - prevPoint[1].y;
-            velocity *= 1.5;
             console.log("thrown");
             
             
@@ -126,14 +124,12 @@ var createMainScene = function( game ) {
             paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
             paper.state = "new";
             
-            oldPaperImg.tl.moveBy( 0, velocity*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
+            oldPaperImg.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
             paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
             
         }
         if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
-            velocity = touch.end.x - prevPoint[1].x;
-            velocity *= 1.5;
             console.log("got");
             
             oldPaperImg.frame = paper.pic.frame;
@@ -143,7 +139,7 @@ var createMainScene = function( game ) {
             paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
             paper.state = "new";
             
-            oldPaperImg.tl.moveBy( velocity*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
+            oldPaperImg.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
             paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
             
         }
