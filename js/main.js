@@ -10,6 +10,7 @@ window.onload = function() {
                  SELECT_MENU,
                  IMG_MARK_CIRCLE, IMG_MARK_X,
                  IMG_GAMESTART,
+                 IMG_GAMEOVER,
                  SND_THROW);
 
     game.onload = function() {

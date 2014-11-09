@@ -11,6 +11,7 @@ var SELECT_MENU = './img/1-1.png';
 var IMG_MARK_CIRCLE = './img/mark_circle.png';
 var IMG_MARK_X = './img/mark_x.png';
 var IMG_GAMESTART = './img/gamestart.png';
+var IMG_GAMEOVER = './img/gameover.png';
 
 var SELECT_BTN_WIDTH = 900;
 var SELECT_BTN_HEIGHT = 400;

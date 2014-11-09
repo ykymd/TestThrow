@@ -172,6 +172,7 @@ var createMainScene = function( game ) {
     } );
 
     //"START"の文字の表示
+    /*
     var l_start = new Sprite(GAMESTART_IMG_WIDTH,GAMESTART_IMG_HEIGHT);
     var labelSize = {'width': 320, 'height': 80};
     l_start.image = game.assets[IMG_GAMESTART];
@@ -184,7 +185,17 @@ var createMainScene = function( game ) {
             //player.canclick = true;
             this.parentNode.removeChild(l_start);
         });
+    */
 
+    //"GAMEOVER"の文字の表示
+    l_over = new Sprite(GAMESTART_IMG_WIDTH,GAMESTART_IMG_HEIGHT);
+    l_over.image = game.assets[IMG_GAMEOVER];
+    l_over.visible = true;
+    l_over.moveTo(game.width,game.height/2-l_over.height/2);
+    l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
+        l_over.visible = false;
+        game.replaceScene(createResultScene(game));
+    });
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
@@ -208,7 +219,7 @@ var createMainScene = function( game ) {
     scene.addChild(newPaperImg);
     scene.addChild(pauseButton);
     scene.addChild(debugLabel);
-    scene.addChild(l_start);
+    //scene.addChild(l_start);
 
     var timerCircleRadius = 30;
     var timerCircleSurface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
@@ -252,6 +263,8 @@ var createMainScene = function( game ) {
     scene.addChild(timerCircle);
     scene.addChild(timerArc);
     scene.addChild(timerScore);
+
+    //scene.addChild(l_over);
 
     return scene;
 };
