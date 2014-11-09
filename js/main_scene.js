@@ -32,16 +32,17 @@ var createMainScene = function( game ) {
                   'score': 0 };
     paper.pic.image = game.assets[IMG_PAPER];
     paper.pic.frame = Paper_frame.ALC;
-    // paper.pic.originX = 0;
-    // paper.pic.originY = 0;
-    // paper.pic.scaleX = ( PAPER_W / PAPER_IMG_W );
-    // paper.pic.scaleY = ( PAPER_H / PAPER_IMG_H );
     paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
 
     var newPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
     newPaperImg.image = game.assets[IMG_PAPER];
     newPaperImg.frame = Paper_frame.ALC;
     newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+    
+    var oldPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
+    oldPaperImg.image = game.assets[IMG_PAPER];
+    oldPaperImg.frame = Paper_frame.ALC;
+    oldPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
 
     function TouchProperty() {
         this.x = 0;
@@ -66,7 +67,8 @@ var createMainScene = function( game ) {
     }
     var from = new TouchProperty();
     var velocity = 0;
-    const THRS = 4;
+    const THRS = 16;
+    const MOVE_TIME = 1.00;
     
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
@@ -113,37 +115,37 @@ var createMainScene = function( game ) {
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
             velocity = touch.end.y - prevPoint[1].y;
-            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
-            console.log(newPaperImg.frame);
+            velocity *= 1.5;
             console.log("thrown");
-
-            paper.pic.tl.moveBy( 0, velocity*0.66*game.fps, Math.floor(0.66*game.fps) );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
-                          .delay(2)
-                          .exec( function() {
-                              paper.state = "new";
-                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.frame = newPaperImg.frame;
-                              console.log("new paper supplied");
-                          });
+            
+            
+            oldPaperImg.frame = paper.pic.frame;
+            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+            
+            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+            paper.state = "new";
+            
+            oldPaperImg.tl.moveBy( 0, velocity*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
+            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+            
         }
         if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
             velocity = touch.end.x - prevPoint[1].x;
-            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
+            velocity *= 1.5;
             console.log("got");
-
-            paper.pic.tl.moveBy( velocity*0.66*game.fps, 0, Math.floor(0.66*game.fps) );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
-                          .delay(2)
-                          .exec( function() {
-                              paper.state = "new";
-                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-                              paper.pic.frame = newPaperImg.frame;
-                              console.log("new paper supplied");
-                          });
+            
+            oldPaperImg.frame = paper.pic.frame;
+            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+            
+            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+            paper.state = "new";
+            
+            oldPaperImg.tl.moveBy( velocity*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
+            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+            
         }
 
     } );
@@ -182,6 +184,7 @@ var createMainScene = function( game ) {
     scene.addChild(bgImage);
     scene.addChild(bgRayer);
     scene.addChild(paper.pic);
+    scene.addChild(oldPaperImg);
     scene.addChild(newPaperImg);
     scene.addChild(pauseButton);
     scene.addChild(debugLabel);
