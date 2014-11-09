@@ -8,10 +8,11 @@ window.onload = function() {
                  BTN_PAUSE,
                  BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
                  SELECT_MENU,
+                 IMG_MARK_CIRCLE, IMG_MARK_X,
                  SND_THROW);
 
     game.onload = function() {
-        game.replaceScene(createTitleScene(game));
+        game.replaceScene(createResultScene(game));
     };
     game.start();
 };
