@@ -101,6 +101,7 @@ var createMainScene = function( game ) {
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
         touching = false;
+        console.log("touch end");
         if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  &&
              e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
              e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
@@ -115,14 +116,15 @@ var createMainScene = function( game ) {
             console.log(newPaperImg.frame);
             console.log("thrown");
             
-            paper.pic.tl.moveBy( 0, velocity*30, 30 );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*game.fps );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*Game.fps )
+            paper.pic.tl.moveBy( 0, velocity*0.66*game.fps, Math.floor(0.66*game.fps) );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
+                          .delay(2)
                           .exec( function() {
                               paper.state = "new";
                               newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
                               paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
                               paper.pic.frame = newPaperImg.frame;
+                              console.log("new paper supplied");
                           });
         }
         if ( paper.state == "new" &&  touch.end.x < prevPoint[PREV_COUNT-1].x ) {
@@ -131,14 +133,15 @@ var createMainScene = function( game ) {
             newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
             console.log("got");
             
-            paper.pic.tl.moveBy( velocity*30, 0, 30 );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*game.fps );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,0.66*Game.fps )
+            paper.pic.tl.moveBy( velocity*0.66*game.fps, 0, Math.floor(0.66*game.fps) );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(0.66*game.fps) )
+                          .delay(2)
                           .exec( function() {
                               paper.state = "new";
                               newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
                               paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
                               paper.pic.frame = newPaperImg.frame;
+                              console.log("new paper supplied");
                           });
         }
 
