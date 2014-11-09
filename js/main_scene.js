@@ -60,6 +60,7 @@ var createMainScene = function( game ) {
     const VELOCITY = -130;
 
     var wasteSound = game.assets[SND_WASTE];    //クシャっとするときの効果音
+    var flySound = game.assets[SND_FLY];
 
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
@@ -137,6 +138,8 @@ var createMainScene = function( game ) {
             sprite.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
             scene.addChild(sprite);
 
+            flySound.play();    //効果音を再生
+
             placeNewPaper();
         } else if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
@@ -148,6 +151,8 @@ var createMainScene = function( game ) {
             sprite.moveTo( paper.pic.x, paper.pic.y );
             sprite.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
             scene.addChild(sprite);
+
+            flySound.play();    //効果音を再生
 
             placeNewPaper();
         } else {

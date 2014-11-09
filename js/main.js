@@ -12,7 +12,9 @@ window.onload = function() {
                  IMG_GAMESTART,
                  IMG_GAMEOVER,
                  SND_THROW,
-                 SND_WASTE);
+                 SND_WASTE,
+                 SND_FLY,
+                 SND_PASS);
 
     game.onload = function() {
         game.replaceScene(createTitleScene(game));
