@@ -1,23 +1,23 @@
 var createMainScene = function( game ) {
     console.log("Main Scene");
-    
+
     // initialize
     var scene = new Scene();
-    
+
     var bgImage = new Sprite( 1280, 1920 );
-    bgImage.image = game.assets['./img/trash.png'];
+    bgImage.image = game.assets[IMG_TRASH];
     bgImage.originX = 0;
     bgImage.originY = 0;
     bgImage.scaleX = ( game.width / bgImage.width );
     bgImage.scaleY = ( game.height/ bgImage.height );
     bgImage.moveTo(0,0);
     scene.addChild(bgImage);
-    
+
     var bgRayer = new Sprite( game.width, game.height );
     bgRayer.backgroundColor = '#FFF';
     bgRayer.opacity = 0.5;
     scene.addChild(bgRayer);
-    
+
     const PAPER_DEFAULT_X = 60;
     const PAPER_DEFAULT_Y = 90;
     const PAPER_W = 200;
@@ -32,7 +32,7 @@ var createMainScene = function( game ) {
     var paper = { 'pic': new Sprite( PAPER_IMG_W, PAPER_IMG_H ) ,
                   'state': "new" ,
                   'score': 0 };
-    paper.pic.image = game.assets['./img/paper.png'];
+    paper.pic.image = game.assets[IMG_PAPER];
     paper.pic.frame = Paper_frame.ALC;
     // paper.pic.originX = 0;
     // paper.pic.originY = 0;
@@ -40,30 +40,30 @@ var createMainScene = function( game ) {
     // paper.pic.scaleY = ( PAPER_H / PAPER_IMG_H );
     paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
     scene.addChild(paper.pic);
-    
+
     var newPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
-    newPaperImg.image = game.assets['./img/paper.png'];
+    newPaperImg.image = game.assets[IMG_PAPER];
     newPaperImg.frame = Paper_frame.ALC;
     newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
     scene.addChild(newPaperImg);
-    
+
     function TouchProperty() {
         this.x = 0;
         this.y = 0;
         this.time = 0;
         return this;
     }
-    
+
     var touching = false;
     var touch = { 'begin': new TouchProperty(),
                   'end': new TouchProperty(),
                   'current': new TouchProperty()};
-    
+
     var debugLabel = new Label("");
     debugLabel.moveTo(0,0);
     debugLabel.color = "#F0F";
     scene.addChild(debugLabel);
-    
+
     var prevPoint = [];
     const PREV_COUNT = 5;
     for ( var i = 0; i < PREV_COUNT; i++ ) {
@@ -71,9 +71,6 @@ var createMainScene = function( game ) {
     }
     var from = new TouchProperty();
     var velocity = 0;
-    
-    
-    
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
         touch.begin.x = e.x;
@@ -104,13 +101,13 @@ var createMainScene = function( game ) {
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
         touching = false;
-        if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  && 
+        if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  &&
              e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
              e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
             paper.state = "wasted";
             paper.pic.frame = Paper_frame.CRASH;
         }
-        
+
         if ( paper.state == "wasted" &&  touch.end.y < prevPoint[PREV_COUNT-1].y ) {
             paper.state = "throw";
             velocity = touch.end.y - prevPoint[1].y;
@@ -144,12 +141,11 @@ var createMainScene = function( game ) {
                               paper.pic.frame = newPaperImg.frame;
                           });
         }
-        
+
     } );
-    
+
     scene.addEventListener( Event.ENTER_FRAME, function(e) {
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
-        
         for ( var i = PREV_COUNT-1; i > 0; i-- ) {
             prevPoint[i].x = prevPoint[i-1].x;
             prevPoint[i].y = prevPoint[i-1].y;
@@ -157,10 +153,10 @@ var createMainScene = function( game ) {
         prevPoint[0].x = touch.current.x;
         prevPoint[0].y = touch.current.y;
     } );
-    
-    
+
+
     // pause menu
-    var pauseImage = game.assets['./img/pause.png'];
+    var pauseImage = game.assets[IMG_PAPER];
     var pauseSize = {'width': 60, 'height': 60};
     var pauseButton = new Button(pauseImage.width, pauseImage.height);
     pauseButton.image = pauseImage;
@@ -173,6 +169,6 @@ var createMainScene = function( game ) {
                                  game.pushScene(createPauseScene(game));
                                  });
     scene.addChild(pauseButton);
-    
+
     return scene;
 };
