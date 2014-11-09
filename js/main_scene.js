@@ -101,12 +101,6 @@ var createMainScene = function( game ) {
             paper.sprite.addChild(sprite);
         }
 
-        if (paper.score) {
-            scores.okMax++;
-        } else {
-            scores.ngMax++;
-        }
-
         scene.addChild(paper.sprite);
         paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps), enchant.Easing.QUINT_EASEOUT);
     };
@@ -194,6 +188,12 @@ var createMainScene = function( game ) {
                 scores.ng++;
             }
 
+            if (paper.score) {
+                scores.okMax++;
+            } else {
+                scores.ngMax++;
+            }
+
             placeNewPaper();
         } else if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
@@ -206,6 +206,12 @@ var createMainScene = function( game ) {
 
             if (paper.score) {
                 scores.ok++;
+            }
+
+            if (paper.score) {
+                scores.okMax++;
+            } else {
+                scores.ngMax++;
             }
 
             placeNewPaper();
