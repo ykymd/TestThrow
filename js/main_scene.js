@@ -74,7 +74,6 @@ var createMainScene = function( game ) {
     
     
     
-    
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
         touch.begin.x = e.x;
@@ -92,6 +91,13 @@ var createMainScene = function( game ) {
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
         touch.current.x = e.x;
         touch.current.y = e.y;
+        if ( touching == true ) {
+            if ( paper.state == "wasted" ) {
+                paper.pic.moveTo ( from.x ,  from.y + touch.current.y - touch.begin.y );
+            } else if ( paper.state == "new" ){
+                paper.pic.moveTo ( from.x + touch.current.x - touch.begin.x, from.y);
+            }
+        }
     } );
     scene.addEventListener( Event.TOUCH_END, function(e) {
         touch.end.x = e.x;
@@ -108,34 +114,41 @@ var createMainScene = function( game ) {
         if ( paper.state == "wasted" &&  touch.end.y < prevPoint[PREV_COUNT-1].y ) {
             paper.state = "throw";
             velocity = touch.end.y - prevPoint[1].y;
+            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
+            console.log(newPaperImg.frame);
             console.log("thrown");
+            
+            paper.pic.tl.moveBy( 0, velocity*30, 30 );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*game.fps );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*Game.fps )
+                          .exec( function() {
+                              paper.state = "new";
+                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                              paper.pic.frame = newPaperImg.frame;
+                          });
         }
         if ( paper.state == "new" &&  touch.end.x < prevPoint[PREV_COUNT-1].x ) {
             paper.state = "get";
             velocity = touch.end.x - prevPoint[1].x;
+            newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
             console.log("got");
+            
+            paper.pic.tl.moveBy( velocity*30, 0, 30 );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , 0.66*game.fps );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,0.66*Game.fps )
+                          .exec( function() {
+                              paper.state = "new";
+                              newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                              paper.pic.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                              paper.pic.frame = newPaperImg.frame;
+                          });
         }
         
     } );
     
     scene.addEventListener( Event.ENTER_FRAME, function(e) {
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
-        // console.log("tick past");
-        if ( touching == true ) {
-            if ( paper.state == "wasted" ) {
-                paper.pic.moveTo ( from.x ,  from.y + touch.current.y - touch.begin.y );
-            } else if ( paper.state == "new" ){
-                paper.pic.moveTo ( from.x + touch.current.x - touch.begin.x, from.y);
-            }
-        }
-        if ( paper.state == "get" ) {
-            paper.pic.tl.moveBy( velocity*30, 0, 30 );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,20 );
-        }
-        if ( paper.state == "throw" ) {
-            paper.pic.tl.moveBy( 0, velocity*30, 30 );
-            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,20 );
-        }
         
         for ( var i = PREV_COUNT-1; i > 0; i-- ) {
             prevPoint[i].x = prevPoint[i-1].x;

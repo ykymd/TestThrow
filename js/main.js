@@ -12,7 +12,7 @@ window.onload = function() {
                  SND_THROW);
 
     game.onload = function() {
-        game.replaceScene(createResultScene(game));
+        game.replaceScene(createTitleScene(game));
     };
     game.start();
 };
