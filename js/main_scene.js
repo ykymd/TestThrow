@@ -74,7 +74,6 @@ var createMainScene = function( game ) {
 
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
-        //if (!isGameStart) return;
 
         touch.begin.x = e.x;
         touch.begin.y = e.y;
@@ -88,13 +87,13 @@ var createMainScene = function( game ) {
             prevPoint[i].y = e.y;
         }
         if ( e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
-             e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
+             e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height &&
+             isGameStart == true ) {
             touching = true;
+            console.log("touch start");
         }
     } );
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
-        //if (!isGameStart) return;
-
         touch.current.x = e.x;
         touch.current.y = e.y;
         if ( touching == true ) {
@@ -106,50 +105,48 @@ var createMainScene = function( game ) {
         }
     } );
     scene.addEventListener( Event.TOUCH_END, function(e) {
-        //if (!isGameStart) return;
-
         touch.end.x = e.x;
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
-        touching = false;
         console.log("touch end");
-        if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  &&
-             e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
-             e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
-            paper.state = "wasted";
-            paper.pic.frame = Paper_frame.CRASH;
-        }
+        if ( touching == true ) {
+            if ( touch.begin.x == touch.end.x && touch.begin.y == touch.end.y  &&
+                 e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
+                 e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
+                paper.state = "wasted";
+                paper.pic.frame = Paper_frame.CRASH;
+            }
+    
+            if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
+                paper.state = "throw";
+                console.log("thrown");
+    
+                oldPaperImg.frame = paper.pic.frame;
+                paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+    
+                oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+                paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                paper.state = "new";
 
-        if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
-            paper.state = "throw";
-            console.log("thrown");
+                oldPaperImg.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
+                paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
 
-
-            oldPaperImg.frame = paper.pic.frame;
-            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
-
-            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
-            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-            paper.state = "new";
-
-            oldPaperImg.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) );
-            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
-
-        }
-        if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
-            paper.state = "get";
-            console.log("got");
-
-            oldPaperImg.frame = paper.pic.frame;
-            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
-
-            oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
-            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-            paper.state = "new";
-
-            oldPaperImg.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
-            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
-
+            }
+            if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
+                paper.state = "get";
+                console.log("got");
+    
+                oldPaperImg.frame = paper.pic.frame;
+                paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+    
+                oldPaperImg.moveTo( paper.pic.x, paper.pic.y );
+                paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+                paper.state = "new";
+    
+                oldPaperImg.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) );
+                paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+            }
+            touching = false;
         }
 
     } );
@@ -158,15 +155,15 @@ var createMainScene = function( game ) {
         //if (!isGameStart) return;
 
         debugLabel.text = Math.floor(touch.current.x)+","+Math.floor(touch.current.y);
-        for ( var i = PREV_COUNT-1; i > 0; i-- ) {
-            prevPoint[i].x = prevPoint[i-1].x;
-            prevPoint[i].y = prevPoint[i-1].y;
-        }
-        prevPoint[0].x = touch.current.x;
-        prevPoint[0].y = touch.current.y;
-        if ( touching == false &&
-             ( paper.pic.x != PAPER_DEFAULT_X || paper.pic.y != PAPER_DEFAULT_Y ) &&
-             paper.state != "throw" && paper.state != "get" ){
+        if ( touching == true ) {
+            for ( var i = PREV_COUNT-1; i > 0; i-- ) {
+                prevPoint[i].x = prevPoint[i-1].x;
+                prevPoint[i].y = prevPoint[i-1].y;
+            }
+            prevPoint[0].x = touch.current.x;
+            prevPoint[0].y = touch.current.y;
+        } else if ( ( paper.pic.x != PAPER_DEFAULT_X || paper.pic.y != PAPER_DEFAULT_Y ) &&
+                      paper.state != "throw" && paper.state != "get" ){
             paper.pic.moveTo ( (paper.pic.x + PAPER_DEFAULT_X)/2,  (paper.pic.y + PAPER_DEFAULT_Y)/2 );
         }
     } );
@@ -180,7 +177,7 @@ var createMainScene = function( game ) {
     l_start.moveTo(0,game.width/2-GAMESTART_IMG_HEIGHT/2);
     l_start.tl.rotateTo(45,1).scaleTo(5,1).scaleTo(0.9,20).and().rotateTo(0,20).delay(10).fadeOut(10).and().moveBy(0,-50,10).then(function(){
             l_start.visible = false;
-            this.isGameStart = true;
+            isGameStart = true;
             //player.canclick = true;
             this.parentNode.removeChild(l_start);
         });
@@ -200,15 +197,6 @@ var createMainScene = function( game ) {
                                  game.pushScene(createPauseScene(game));
                                  });
 
-    // drawing
-    scene.addChild(bgImage);
-    scene.addChild(bgRayer);
-    scene.addChild(paper.pic);
-    scene.addChild(oldPaperImg);
-    scene.addChild(newPaperImg);
-    scene.addChild(pauseButton);
-    scene.addChild(debugLabel);
-    scene.addChild(l_start);
 
     var timerCircleRadius = 30;
     var timerCircleSurface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
@@ -248,7 +236,16 @@ var createMainScene = function( game ) {
                           }
                           timerScore.setText(seconds.toFixed(0));
                           }, 30 * game.fps);
-
+    
+    // drawing
+    scene.addChild(bgImage);
+    scene.addChild(bgRayer);
+    scene.addChild(paper.pic);
+    scene.addChild(oldPaperImg);
+    scene.addChild(newPaperImg);
+    scene.addChild(pauseButton);
+    scene.addChild(debugLabel);
+    scene.addChild(l_start);
     scene.addChild(timerCircle);
     scene.addChild(timerArc);
     scene.addChild(timerScore);
