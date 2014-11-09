@@ -61,6 +61,7 @@ var createMainScene = function( game ) {
 
     var wasteSound = game.assets[SND_WASTE];    //クシャっとするときの効果音
     var flySound = game.assets[SND_FLY];
+    var passSound = game.assets[SND_PASS];
 
     var startFrame;
 
@@ -184,7 +185,7 @@ var createMainScene = function( game ) {
             var sprite = paper.sprite;
             sprite.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
 
-            flySound.play();    //効果音を再生
+            passSound.play();    //効果音を再生
 
             placeNewPaper();
         } else {
