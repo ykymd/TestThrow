@@ -90,10 +90,18 @@ var createMainScene = function( game ) {
             }
         }
         moved = true;
+
+        for ( var i = PREV_COUNT-1; i > 0; i-- ) {
+            prevPoint[i].x = prevPoint[i-1].x;
+            prevPoint[i].y = prevPoint[i-1].y;
+        }
+        prevPoint[0].x = touch.current.x;
+        prevPoint[0].y = touch.current.y;
     } );
     paper.pic.addEventListener( Event.TOUCH_END, function(e) {
         //if (!isGameStart) return;
 
+        touching = false;
         touch.end.x = e.x;
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
@@ -109,7 +117,7 @@ var createMainScene = function( game ) {
             paper.pic.frame = Math.floor(Math.random()*3)%3+1;
             paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
             paper.state = "new";
-            paper.pic.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps) );
+            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps));
         };
 
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
@@ -124,8 +132,7 @@ var createMainScene = function( game ) {
             scene.addChild(sprite);
 
             placeNewPaper();
-        }
-        if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
+        } else if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
 
             // save old paper
@@ -137,24 +144,10 @@ var createMainScene = function( game ) {
             scene.addChild(sprite);
 
             placeNewPaper();
+        } else {
+            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(.25*game.fps));
         }
 
-    } );
-
-    scene.addEventListener( Event.ENTER_FRAME, function(e) {
-        //if (!isGameStart) return;
-
-        for ( var i = PREV_COUNT-1; i > 0; i-- ) {
-            prevPoint[i].x = prevPoint[i-1].x;
-            prevPoint[i].y = prevPoint[i-1].y;
-        }
-        prevPoint[0].x = touch.current.x;
-        prevPoint[0].y = touch.current.y;
-        if ( touching == false &&
-             ( paper.pic.x != PAPER_DEFAULT_X || paper.pic.y != PAPER_DEFAULT_Y ) &&
-             paper.state != "throw" && paper.state != "get" ){
-            paper.pic.moveTo ( (paper.pic.x + PAPER_DEFAULT_X)/2,  (paper.pic.y + PAPER_DEFAULT_Y)/2 );
-        }
     } );
 
     //"START"の文字の表示
@@ -176,10 +169,10 @@ var createMainScene = function( game ) {
     l_over.image = game.assets[IMG_GAMEOVER];
     l_over.visible = true;
     l_over.moveTo(game.width,game.height/2-l_over.height/2);
-    l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
-        l_over.visible = false;
-        game.replaceScene(createResultScene(game));
-    });
+//    l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
+//        l_over.visible = false;
+//        game.replaceScene(createResultScene(game));
+//    });
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
