@@ -1,6 +1,6 @@
 
 var createResultScene = function(game) {
-    var score = {'correct': 0, 'fail': 0};
+    var score = {'correct': 0, 'fail': 0, 'gpa': 0.0};
     var scene = new Scene();
 
     var hline = new Surface(300, 1);
@@ -61,6 +61,16 @@ var createResultScene = function(game) {
     failMark.scaleY = size.height / failImage.height;
     failMark.moveTo(0, 230);
     scene.addChild(failMark);
+
+    var gpa = new MutableText(40, 400, 100);
+    gpa.fontSize = 32;
+    gpa.setText('GPA');
+    scene.addChild(gpa);
+
+    var gpaScore = new MutableText(180, 400, 100);
+    gpaScore.fontSize = 32;
+    gpaScore.setText(score.gpa.toFixed(2));
+    scene.addChild(gpaScore);
 
     scene.backgroundColor = '#FFF';
 
