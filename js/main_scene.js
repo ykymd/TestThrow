@@ -81,11 +81,17 @@ var createMainScene = function( game ) {
 
         paper.score = Math.random(1) > 0.5;
         for (var i = 0; i < paper.numOfQuestion; i++) {
-            var size = {'width': 30, 'height': 22};
+            var size = {'width': 60, 'height': 44};
             var image = (paper.score) ? markOk : markNg;
-            var sprite = new Sprite(size.width, size.height);
+            var sprite = new Sprite(image.width, image.height);
+            sprite.image = image;
+            sprite.originX = 0;
+            sprite.originY = 0;
+            sprite.scaleX = size.width / image.width;
+            sprite.scaleY = size.height / image.height;
+            sprite.moveTo(20, i * 80 + 20);
 
-            //paper.sprite.addChild(sprite);
+            paper.sprite.addChild(sprite);
         }
 
         scene.addChild(paper.sprite);
@@ -143,22 +149,29 @@ var createMainScene = function( game ) {
         touch.end.time = (new Date()).getTime();
 
         if ( !moved ) {
-            paper.state = "wasted";
-            paper.pic.frame = Paper_frame.CRASH;
             wasteSound.play();
+
+            paper.state = "wasted";
+            paper.pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
+            paper.pic.image = game.assets[IMG_PAPER];
+            paper.pic.frame = Paper_frame.CRASH;
+
+            var group = new Group();
+            group.addChild(paper.pic);
+            group.moveTo( paper.sprite.x, paper.sprite.y );
+
+            scene.addChild(group);
+
+            scene.removeChild(paper.sprite);
+            paper.sprite = group;
             return;
         }
 
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
 
-            scene.removeChild(paper.sprite);
-
             // throw old paper away
-            var sprite = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-            sprite.image = game.assets[IMG_PAPER];
-            sprite.frame = Paper_frame.CRASH;
-            sprite.moveTo( paper.sprite.x, paper.sprite.y );
+            var sprite = paper.sprite;
             sprite.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
             scene.addChild(sprite);
 
