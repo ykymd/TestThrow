@@ -13,6 +13,7 @@ const IMG_MARK_CIRCLE = './img/mark_circle.png';
 const IMG_MARK_X = './img/mark_x.png';
 const IMG_GAMESTART = './img/gamestart.png';
 const IMG_GAMEOVER = './img/gameover.png';
+const IMG_CURSOR = './img/cursor.png';
 
 const SELECT_BTN_WIDTH = 900;
 const SELECT_BTN_HEIGHT = 400;

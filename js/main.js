@@ -12,6 +12,7 @@ window.onload = function() {
                  IMG_MARK_CIRCLE, IMG_MARK_X,
                  IMG_GAMESTART,
                  IMG_GAMEOVER,
+                 IMG_CURSOR,
                  SND_THROW,
                  SND_WASTE,
                  SND_FLY,

@@ -26,9 +26,10 @@ var createSelectScene = function(game) {
                                 curtain.opacity = 0;
                                 enterSound.play();
                                 curtain.tl.fadeIn(.25 * game.fps).exec(function(){
-                                                                       game.removeScene(scene);
-                                                                       game.replaceScene(createMainScene(game));
-                                                                       });
+                                    game.stage = this.frame;
+                                    game.removeScene(scene);
+                                    game.replaceScene(createMainScene(game));
+                                });
                                 scene.addChild(curtain);
                                 });
         sprite.addEventListener(Event.TOUCH_START, function() { pressedButton = this; });

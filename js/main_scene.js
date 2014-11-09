@@ -78,6 +78,8 @@ var createMainScene = function( game ) {
     var markOk = game.assets[IMG_MARK_CIRCLE];
     var markNg = game.assets[IMG_MARK_X];
 
+    var guide = null;
+
     function placeNewPaper() {
         var pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
         pic.image = game.assets[IMG_PAPER];
@@ -92,7 +94,7 @@ var createMainScene = function( game ) {
         paper.score = Math.random(1) < 0.5;
         for (var i = 0; i < paper.numOfQuestion; i++) {
             var size = {'width': 60, 'height': 44};
-            var image = (paper.score) ? markOk : markNg;
+            var image = (paper.isSuccessed()) ? markOk : markNg;
             var sprite = new Sprite(image.width, image.height);
             sprite.image = image;
             sprite.originX = 0;
@@ -105,7 +107,27 @@ var createMainScene = function( game ) {
         }
 
         scene.addChild(paper.sprite);
-        paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps), enchant.Easing.QUINT_EASEOUT);
+        var tl = paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps), enchant.Easing.QUINT_EASEOUT);
+
+        if (game.stage == 0) {
+            tl.exec(function() {
+            var image = game.assets[IMG_CURSOR];
+            var size = {width: image.width / 4, height: image.height / 4};
+            guide = new Sprite(image.width, image.height);
+            guide.image = image;
+            if (paper.isSuccessed()) {
+                guide.rotation = -90;
+                guide.moveTo(PAPER_DEFAULT_X - 10 - size.width, PAPER_DEFAULT_Y + PAPER_H / 2 + size.height / 2);
+            } else {
+                guide.moveTo(PAPER_DEFAULT_X + PAPER_W / 2 - size.width / 2, PAPER_DEFAULT_Y - 10 - size.height);
+            }
+            guide.originX = 0;
+            guide.originY = 0;
+            guide.scaleX = .25;
+            guide.scaleY = .25;
+            scene.addChild(guide);
+            });
+        }
     };
 
     // game main
@@ -126,6 +148,8 @@ var createMainScene = function( game ) {
         }
         touching = true;
         moved = false;
+
+        if (guide) scene.removeChild(guide);
     } );
     scene.addEventListener( Event.TOUCH_MOVE, function(e) {
         //if (!isGameStart) return;
