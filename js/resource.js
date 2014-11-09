@@ -14,8 +14,8 @@ var IMG_MARK_X = './img/mark_x.png';
 var SELECT_BTN_WIDTH = 900;
 var SELECT_BTN_HEIGHT = 400;
 
-var TITLE_IMG_WIDTH = 320;
-var TITLE_IMG_HEIGHT = 480;
+var TITLE_IMG_WIDTH = 1280;
+var TITLE_IMG_HEIGHT = 1960;
 
 //効果音
 var SND_THROW = './sound/sei_ge_gomibako02.mp3';
