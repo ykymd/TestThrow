@@ -60,6 +60,8 @@ var createMainScene = function( game ) {
     const VELOCITY = -130;
 
     var wasteSound = game.assets[SND_WASTE];    //クシャっとするときの効果音
+    
+    var startFrame;
 
     // game main
     paper.pic.addEventListener( Event.TOUCH_START, function(e) {
@@ -117,7 +119,7 @@ var createMainScene = function( game ) {
         }
 
         function placeNewPaper() {
-            paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+            paper.pic.frame = Math.floor(Math.random()*4)%4;
             paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
             paper.state = "new";
             paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps));
@@ -152,6 +154,12 @@ var createMainScene = function( game ) {
         }
 
     } );
+    
+    scene.addEventListener( Event.ENTER_FRAME, function(e) {
+        if ( game.frame - startFrame == 30*game.fps ) {
+            gameOver();
+        }
+    });
 
     //"START"の文字の表示
     var l_start = new Sprite(GAMESTART_IMG_WIDTH,GAMESTART_IMG_HEIGHT);
@@ -164,6 +172,7 @@ var createMainScene = function( game ) {
             l_start.visible = false;
             isGameStart = true;
             //player.canclick = true;
+            timerInitialize();
             this.parentNode.removeChild(l_start);
         });
 
@@ -172,10 +181,13 @@ var createMainScene = function( game ) {
     l_over.image = game.assets[IMG_GAMEOVER];
     l_over.visible = true;
     l_over.moveTo(game.width,game.height/2-l_over.height/2);
-//    l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
-//        l_over.visible = false;
-//        game.replaceScene(createResultScene(game));
-//    });
+    var gameOver = function() {
+        l_over.tl.moveTo(0,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width,game.height/2-l_over.height/2,20, enchant.Easing.QUAD_EASYINOUT).then(function(){
+            l_over.visible = false;
+            game.replaceScene(createResultScene(game));
+        });
+        isGameStart = false;
+    };
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
@@ -208,27 +220,29 @@ var createMainScene = function( game ) {
     timerScore.fontSize = 32;
     timerScore.scaleX = .5;
 
-    var startFrame = game.frame;
-    timerCircle.tl.repeat(function() {
-                          var currentTime = game.frame;
-                          var surface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
-                          var ctx = surface.context;
-                          ctx.moveTo(timerCircleRadius + 1, timerCircleRadius + 1);
-                          ctx.lineTo(timerCircleRadius + 1, 1);
-                          ctx.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, -0.5 * Math.PI, -0.48 * Math.PI + 2 * Math.PI * (currentTime - startFrame) / (30 * game.fps));
-                          ctx.lineTo(timerCircleRadius + 1, timerCircleRadius + 1);
-                          ctx.fillStyle = '#FCC';
-                          ctx.fill();
-                          ctx.stroke();
-                          timerArc.image = surface;
-
-                          var seconds = Math.floor((30 * game.fps - (currentTime - startFrame)) / game.fps);
-                          if (seconds < 10) {
-                          timerScore.scaleX = 1.0;
-                          timerScore.x = 250 + 18;
-                          }
-                          timerScore.setText(seconds.toFixed(0));
-                          }, 30 * game.fps);
+    var timerInitialize = function() {
+        startFrame = game.frame;
+        timerCircle.tl.repeat(function() {
+                              var currentTime = game.frame;
+                              var surface = new Surface(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
+                              var ctx = surface.context;
+                              ctx.moveTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                              ctx.lineTo(timerCircleRadius + 1, 1);
+                              ctx.arc(timerCircleRadius + 1, timerCircleRadius + 1, timerCircleRadius, -0.5 * Math.PI, -0.48 * Math.PI + 2 * Math.PI * (currentTime - startFrame) / (30 * game.fps));
+                              ctx.lineTo(timerCircleRadius + 1, timerCircleRadius + 1);
+                              ctx.fillStyle = '#FCC';
+                              ctx.fill();
+                              ctx.stroke();
+                              timerArc.image = surface;
+        
+                              var seconds = Math.floor((30 * game.fps - (currentTime - startFrame)) / game.fps);
+                              if (seconds < 10) {
+                              timerScore.scaleX = 1.0;
+                              timerScore.x = 250 + 18;
+                              }
+                              timerScore.setText(seconds.toFixed(0));
+                              }, 30 * game.fps);
+    };
 
     // drawing
     scene.addChild(bgImage);
