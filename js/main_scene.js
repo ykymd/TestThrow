@@ -60,12 +60,14 @@ var createMainScene = function( game ) {
     debugLabel.color = "#F0F";
 
     var prevPoint = [];
-    const PREV_COUNT = 5;
+    const PREV_COUNT = 2;
     for ( var i = 0; i < PREV_COUNT; i++ ) {
         prevPoint[i] = new TouchProperty();
     }
     var from = new TouchProperty();
     var velocity = 0;
+    const THRS = 4;
+    
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
         touch.begin.x = e.x;
@@ -108,7 +110,7 @@ var createMainScene = function( game ) {
             paper.pic.frame = Paper_frame.CRASH;
         }
 
-        if ( paper.state == "wasted" &&  touch.end.y < prevPoint[PREV_COUNT-1].y ) {
+        if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
             velocity = touch.end.y - prevPoint[1].y;
             newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
@@ -126,7 +128,7 @@ var createMainScene = function( game ) {
                               console.log("new paper supplied");
                           });
         }
-        if ( paper.state == "new" &&  touch.end.x < prevPoint[PREV_COUNT-1].x ) {
+        if ( paper.state == "new" &&  prevPoint[PREV_COUNT-1].x - touch.end.x >= THRS ) {
             paper.state = "get";
             velocity = touch.end.x - prevPoint[1].x;
             newPaperImg.frame = Math.floor(Math.random()*3)%3+1;
@@ -154,6 +156,11 @@ var createMainScene = function( game ) {
         }
         prevPoint[0].x = touch.current.x;
         prevPoint[0].y = touch.current.y;
+        if ( touching == false && 
+             ( paper.pic.x != PAPER_DEFAULT_X || paper.pic.y != PAPER_DEFAULT_Y ) &&
+             paper.state != "throw" && paper.state != "get" ){
+            paper.pic.moveTo ( (paper.pic.x + PAPER_DEFAULT_X)/2,  (paper.pic.y + PAPER_DEFAULT_Y)/2 );
+        }
     } );
 
 
