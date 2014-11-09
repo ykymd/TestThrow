@@ -26,3 +26,5 @@ var GAMESTART_IMG_HEIGHT = 80;
 //効果音
 var SND_THROW = './sound/sei_ge_gomibako02.mp3';
 var SND_WASTE = './sound/b_sil_paper_marumeru01.mp3';
+var SND_FLY = './sound/sen_ge_byun02.mp3';
+var SND_PASS = './sound/sei_ge_shinbun_basa01.mp3';

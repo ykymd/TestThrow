@@ -1,9 +1,11 @@
-効果音素材
+﻿効果音素材
 
 ・紙グシャ効果音
 ■B-Silver
 http://bsilver.soregashi.com/
 
 ・ゴミ箱効果音
+・投げ効果音
+・紙送り効果音
 ■フリー効果音 On-Jin ～音人～
 http://on-jin.com/
