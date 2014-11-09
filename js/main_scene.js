@@ -198,6 +198,10 @@ var createMainScene = function( game ) {
     var timerArc = new Sprite(2 * timerCircleRadius + 2, 2 * timerCircleRadius + 2);
     timerArc.moveTo(250, 10);
 
+    var timerScore = new MutableText(250 - 30, 10 + 18, 100);
+    timerScore.fontSize = 32;
+    timerScore.scaleX = .5;
+
     var startFrame = game.frame;
     timerCircle.tl.repeat(function() {
                           var currentTime = game.frame;
@@ -211,9 +215,18 @@ var createMainScene = function( game ) {
                           ctx.fill();
                           ctx.stroke();
                           timerArc.image = surface;
+
+                          var seconds = Math.floor((30 * game.fps - (currentTime - startFrame)) / game.fps);
+                          if (seconds < 10) {
+                          timerScore.scaleX = 1.0;
+                          timerScore.x = 250 + 18;
+                          }
+                          timerScore.setText(seconds.toFixed(0));
                           }, 30 * game.fps);
+
     scene.addChild(timerCircle);
     scene.addChild(timerArc);
+    scene.addChild(timerScore);
 
     return scene;
 };
