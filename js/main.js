@@ -13,6 +13,7 @@ window.onload = function() {
                  IMG_BACK,
                  IMG_GAMESTART,
                  IMG_GAMEOVER,
+                 IMG_CURSOR,
                  SND_THROW,
                  SND_WASTE,
                  SND_FLY,
