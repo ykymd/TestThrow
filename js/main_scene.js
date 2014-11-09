@@ -11,12 +11,10 @@ var createMainScene = function( game ) {
     bgImage.scaleX = ( game.width / bgImage.width );
     bgImage.scaleY = ( game.height/ bgImage.height );
     bgImage.moveTo(0,0);
-    scene.addChild(bgImage);
 
     var bgRayer = new Sprite( game.width, game.height );
     bgRayer.backgroundColor = '#FFF';
     bgRayer.opacity = 0.5;
-    scene.addChild(bgRayer);
 
     const PAPER_DEFAULT_X = 60;
     const PAPER_DEFAULT_Y = 90;
@@ -39,13 +37,11 @@ var createMainScene = function( game ) {
     // paper.pic.scaleX = ( PAPER_W / PAPER_IMG_W );
     // paper.pic.scaleY = ( PAPER_H / PAPER_IMG_H );
     paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
-    scene.addChild(paper.pic);
 
     var newPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
     newPaperImg.image = game.assets[IMG_PAPER];
     newPaperImg.frame = Paper_frame.ALC;
     newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-    scene.addChild(newPaperImg);
 
     function TouchProperty() {
         this.x = 0;
@@ -62,7 +58,6 @@ var createMainScene = function( game ) {
     var debugLabel = new Label("");
     debugLabel.moveTo(0,0);
     debugLabel.color = "#F0F";
-    scene.addChild(debugLabel);
 
     var prevPoint = [];
     const PREV_COUNT = 5;
@@ -80,6 +75,10 @@ var createMainScene = function( game ) {
         touch.current.y = e.y;
         from.x = paper.pic.x;
         from.y = paper.pic.y;
+        for ( var i = 0; i < PREV_COUNT; i++ ) {
+            prevPoint[i].x = e.x;
+            prevPoint[i].y = e.y;
+        }
         if ( e.x >= paper.pic.x && e.x <= paper.pic.x + paper.pic.width &&
              e.y >= paper.pic.y && e.y <= paper.pic.y + paper.pic.height ) {
             touching = true;
@@ -171,7 +170,14 @@ var createMainScene = function( game ) {
     pauseButton.addEventListener('tap', function() {
                                  game.pushScene(createPauseScene(game));
                                  });
+    
+    // drawing
+    scene.addChild(bgImage);
+    scene.addChild(bgRayer);
+    scene.addChild(paper.pic);
+    scene.addChild(newPaperImg);
     scene.addChild(pauseButton);
+    scene.addChild(debugLabel);
 
     return scene;
 };
