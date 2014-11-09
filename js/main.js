@@ -3,13 +3,12 @@ enchant();
 window.onload = function() {
     var game = new Game(320, 480);
     game.fps = 30;
-    game.preload('./img/paper.png', './img/trash.png',
-                 './img/title_1.png', './img/title_2.png',
-                 './img/pause.png',
-                 './img/pause_continue.png', './img/pause_giveup.png',
-                 './img/1-1.png', './img/1-2.png', './img/2-1.png', './img/2-2.png',
-                 './img/3-1.png', './img/3-2.png', './img/4-1.png', './img/4-2.png',
-                 './sound/sei_ge_gomibako02.mp3');
+    game.preload(IMG_PAPER, IMG_TRASH,
+                 IMG_TITLE[0], IMG_TITLE[1],
+                 BTN_PAUSE,
+                 BTN_PAUSEMENU[0], BTN_PAUSEMENU[1],
+                 SELECT_MENU,
+                 SND_THROW);
 
     game.onload = function() {
         game.replaceScene(createTitleScene(game));

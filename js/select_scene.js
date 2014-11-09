@@ -7,6 +7,7 @@ var createSelectScene = function(game) {
                   game.assets['./img/2-1.png'], game.assets['./img/2-2.png'],
                   game.assets['./img/3-1.png'], game.assets['./img/3-2.png'],
                   game.assets['./img/4-1.png'], game.assets['./img/4-2.png']];
+    var enterSound = game.assets[SND_THROW];  //決定時の効果音
     var numOfStages = (localStorage.stages) ? localStorage.stages : 1;
     var buttons = new Group();
     var size = { 'width': 225, 'height': 100 };
@@ -26,6 +27,7 @@ var createSelectScene = function(game) {
                                 var curtain = new Sprite(game.width, game.height);
                                 curtain.backgroundColor = '#0';
                                 curtain.opacity = 0;
+                                enterSound.play();
                                 curtain.tl.fadeIn(.25 * game.fps).exec(function(){
                                                                        game.removeScene(scene);
                                                                        game.replaceScene(createMainScene(game));
