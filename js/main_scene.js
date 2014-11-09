@@ -30,8 +30,7 @@ var createMainScene = function( game ) {
                           'REPORT':3,
                           'SAIRI':0 };
     var paper = {
-        sprite: new Group(),
-        'pic': new Sprite( PAPER_IMG_W, PAPER_IMG_H ),
+        sprite: null,
         'state': "new",
         'numOfQuestion': 3,
         'score': 0
@@ -69,12 +68,12 @@ var createMainScene = function( game ) {
     var markNg = game.assets[IMG_MARK_X];
 
     function placeNewPaper() {
-        paper.pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-        paper.pic.image = game.assets[IMG_PAPER];
-        paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+        var pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
+        pic.image = game.assets[IMG_PAPER];
+        pic.frame = Math.floor(Math.random()*3)%3+1;
 
         paper.sprite = new Group();
-        paper.sprite.addChild(paper.pic);
+        paper.sprite.addChild(pic);
         paper.sprite.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
 
         paper.state = "new";
@@ -95,7 +94,7 @@ var createMainScene = function( game ) {
         }
 
         scene.addChild(paper.sprite);
-        paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps));
+        paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps), enchant.Easing.QUINT_EASEOUT);
     };
 
     // game main
@@ -152,12 +151,12 @@ var createMainScene = function( game ) {
             wasteSound.play();
 
             paper.state = "wasted";
-            paper.pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-            paper.pic.image = game.assets[IMG_PAPER];
-            paper.pic.frame = Paper_frame.CRASH;
+            var sprite = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
+            sprite.image = game.assets[IMG_PAPER];
+            sprite.frame = Paper_frame.CRASH;
 
             var group = new Group();
-            group.addChild(paper.pic);
+            group.addChild(sprite);
             group.moveTo( paper.sprite.x, paper.sprite.y );
 
             scene.addChild(group);
@@ -213,6 +212,7 @@ var createMainScene = function( game ) {
             //player.canclick = true;
             timerInitialize();
             this.parentNode.removeChild(l_start);
+            placeNewPaper();
         });
 
     //"GAMEOVER"の文字の表示
@@ -293,8 +293,6 @@ var createMainScene = function( game ) {
     scene.addChild(timerScore);
 
     scene.addChild(l_over);
-
-    placeNewPaper();
 
     return scene;
 };
