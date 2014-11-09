@@ -42,9 +42,10 @@ var createMainScene = function( game ) {
     scene.addChild(paper.pic);
     
     var newPaperImg = new Sprite( PAPER_IMG_W, PAPER_IMG_H );
-    newPaperImg = game.assets['./img/paper.png'];
-    // newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-    // scene.addChild(newPaperImg);
+    newPaperImg.image = game.assets['./img/paper.png'];
+    newPaperImg.frame = Paper_frame.ALC;
+    newPaperImg.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+    scene.addChild(newPaperImg);
     
     function TouchProperty() {
         this.x = 0;
@@ -106,12 +107,12 @@ var createMainScene = function( game ) {
         
         if ( paper.state == "wasted" &&  touch.end.y < prevPoint[PREV_COUNT-1].y ) {
             paper.state = "throw";
-            velocity = touch.end.y - prevPoint[PREV_COUNT-1].y;
+            velocity = touch.end.y - prevPoint[1].y;
             console.log("thrown");
         }
         if ( paper.state == "new" &&  touch.end.x < prevPoint[PREV_COUNT-1].x ) {
             paper.state = "get";
-            velocity = touch.end.x - prevPoint[PREV_COUNT-1].x;
+            velocity = touch.end.x - prevPoint[1].x;
             console.log("got");
         }
         
@@ -127,16 +128,13 @@ var createMainScene = function( game ) {
                 paper.pic.moveTo ( from.x + touch.current.x - touch.begin.x, from.y);
             }
         }
-        /* 
-        if ( paper.state == "get" || paper.state == "throw" ) {
-            paper.pic.frame = Paper_frame.ALC;
-            paper.state = "new";
-        } */
         if ( paper.state == "get" ) {
-            paper.pic.tl.moveBy( velocity*6, 0, PREV_COUNT*6 );
+            paper.pic.tl.moveBy( velocity*30, 0, 30 );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,20 );
         }
         if ( paper.state == "throw" ) {
-            paper.pic.tl.moveBy( 0, velocity*6, PREV_COUNT*6 );
+            paper.pic.tl.moveBy( 0, velocity*30, 30 );
+            newPaperImg.tl.moveTo( PAPER_DEFAULT_X, PAPER_DEFAULT_Y ,20 );
         }
         
         for ( var i = PREV_COUNT-1; i > 0; i-- ) {
