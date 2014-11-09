@@ -29,12 +29,13 @@ var createMainScene = function( game ) {
                           'MATH':1,
                           'REPORT':3,
                           'SAIRI':0 };
-    var paper = { 'pic': new Sprite( PAPER_IMG_W, PAPER_IMG_H ) ,
-                  'state': "new" ,
-                  'score': 0 };
-    paper.pic.image = game.assets[IMG_PAPER];
-    paper.pic.frame = Paper_frame.ALC;
-    paper.pic.moveTo(PAPER_DEFAULT_X,PAPER_DEFAULT_Y);
+    var paper = {
+        sprite: new Group(),
+        'pic': new Sprite( PAPER_IMG_W, PAPER_IMG_H ),
+        'state': "new",
+        'numOfQuestion': 3,
+        'score': 0
+    };
 
     function TouchProperty() {
         this.x = 0;
@@ -63,6 +64,33 @@ var createMainScene = function( game ) {
     
     var startFrame;
 
+    var markOk = game.assets[IMG_MARK_CIRCLE];
+    var markNg = game.assets[IMG_MARK_X];
+
+    function placeNewPaper() {
+        paper.pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
+        paper.pic.image = game.assets[IMG_PAPER];
+        paper.pic.frame = Math.floor(Math.random()*3)%3+1;
+
+        paper.sprite = new Group();
+        paper.sprite.addChild(paper.pic);
+        paper.sprite.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
+
+        paper.state = "new";
+
+        paper.score = Math.random(1) > 0.5;
+        for (var i = 0; i < paper.numOfQuestion; i++) {
+            var size = {'width': 30, 'height': 22};
+            var image = (paper.score) ? markOk : markNg;
+            var sprite = new Sprite(size.width, size.height);
+
+            //paper.sprite.addChild(sprite);
+        }
+
+        scene.addChild(paper.sprite);
+        paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps));
+    };
+
     // game main
     scene.addEventListener( Event.TOUCH_START, function(e) {
         if (!isGameStart) return;
@@ -73,8 +101,8 @@ var createMainScene = function( game ) {
         touch.begin.time = (new Date()).getTime();
         touch.current.x = e.x;
         touch.current.y = e.y;
-        from.x = paper.pic.x;
-        from.y = paper.pic.y;
+        from.x = paper.sprite.x;
+        from.y = paper.sprite.y;
         for ( var i = 0; i < PREV_COUNT; i++ ) {
             prevPoint[i].x = e.x;
             prevPoint[i].y = e.y;
@@ -90,9 +118,9 @@ var createMainScene = function( game ) {
         touch.current.y = e.y;
         if ( touching ) {
             if ( paper.state == "wasted" ) {
-                paper.pic.moveTo ( from.x ,  from.y + touch.current.y - touch.begin.y );
+                paper.sprite.moveTo ( from.x ,  from.y + touch.current.y - touch.begin.y );
             } else if ( paper.state == "new" ){
-                paper.pic.moveTo ( from.x + touch.current.x - touch.begin.x, from.y);
+                paper.sprite.moveTo ( from.x + touch.current.x - touch.begin.x, from.y);
             }
         }
         moved = true;
@@ -112,7 +140,6 @@ var createMainScene = function( game ) {
         touch.end.x = e.x;
         touch.end.y = e.y;
         touch.end.time = (new Date()).getTime();
-        console.log("touch end");
 
         if ( !moved ) {
             paper.state = "wasted";
@@ -120,22 +147,17 @@ var createMainScene = function( game ) {
             wasteSound.play();
             return;
         }
-
-        function placeNewPaper() {
-            paper.pic.frame = Math.floor(Math.random()*4)%4;
-            paper.pic.moveTo( game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y );
-            paper.state = "new";
-            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(MOVE_TIME*game.fps));
-        };
-
+        
         if ( paper.state == "wasted" && prevPoint[PREV_COUNT-1].y - touch.end.y >= THRS ) {
             paper.state = "throw";
+
+            scene.removeChild(paper.sprite);
 
             // throw old paper away
             var sprite = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
             sprite.image = game.assets[IMG_PAPER];
-            sprite.frame = paper.pic.frame;
-            sprite.moveTo( paper.pic.x, paper.pic.y );
+            sprite.frame = Paper_frame.CRASH;
+            sprite.moveTo( paper.sprite.x, paper.sprite.y );
             sprite.tl.moveBy( 0, VELOCITY*MOVE_TIME*game.fps, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
             scene.addChild(sprite);
 
@@ -144,16 +166,12 @@ var createMainScene = function( game ) {
             paper.state = "get";
 
             // save old paper
-            var sprite = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-            sprite.image = game.assets[IMG_PAPER];
-            sprite.frame = paper.pic.frame;
-            sprite.moveTo( paper.pic.x, paper.pic.y );
+            var sprite = paper.sprite;
             sprite.tl.moveBy( VELOCITY*MOVE_TIME*game.fps, 0, Math.floor(MOVE_TIME*game.fps) ).removeFromScene();
-            scene.addChild(sprite);
 
             placeNewPaper();
         } else {
-            paper.pic.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(.25*game.fps), enchant.Easing.QUINT_EASEOUT);
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y , Math.floor(.25*game.fps), enchant.Easing.QUINT_EASEOUT);
         }
 
     } );
@@ -250,7 +268,6 @@ var createMainScene = function( game ) {
     // drawing
     scene.addChild(bgImage);
     scene.addChild(bgRayer);
-    scene.addChild(paper.pic);
     scene.addChild(pauseButton);
     scene.addChild(l_start);
     scene.addChild(timerCircle);
@@ -258,6 +275,8 @@ var createMainScene = function( game ) {
     scene.addChild(timerScore);
 
     scene.addChild(l_over);
+
+    placeNewPaper();
 
     return scene;
 };
