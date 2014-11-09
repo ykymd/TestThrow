@@ -16,7 +16,7 @@ var createTitleScene = function(game) {
     scene.backgroundColor = '#FFF';
     scene.addEventListener('touchend', function() {
                            sound.play();
-                           sprite.frame = 1;
+                           sprite.frame++;
 
                            var curtain = new Sprite(game.width, game.height);
                            curtain.backgroundColor = '#000';
