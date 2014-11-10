@@ -91,19 +91,19 @@ var createMainScene = function(game) {
 
     isGameStart = false; //ゲーム開始中か？
 
+    const Paper_frame = {
+        'SAIRI': 0,
+        'MATH': 1,
+        'ALC': 2,
+        'REPORT': 3,
+        'CRASH': 4,
+    };
     const PAPER_DEFAULT_X = 60;
     const PAPER_DEFAULT_Y = 90;
     const PAPER_W = 200;
     const PAPER_H = 300;
-    const PAPER_IMG_W = 200;
-    const PAPER_IMG_H = 300;
-    const Paper_frame = {
-        'CRASH': 4,
-        'ALC': 2,
-        'MATH': 1,
-        'REPORT': 3,
-        'SAIRI': 0
-    };
+    const PAPER_IMG_W = game.assets[IMG_PAPER].width / Object.keys(Paper_frame).length;
+    const PAPER_IMG_H = game.assets[IMG_PAPER].height;
     var paper = {
         sprite: null,
         state: "new",
@@ -125,7 +125,7 @@ var createMainScene = function(game) {
     var touch = {
         'begin': new TouchProperty(),
         'end': new TouchProperty(),
-        'current': new TouchProperty()
+        velocity: {x: 0, y: 0}
     };
 
     var prevPoint = new TouchProperty();
@@ -144,8 +144,6 @@ var createMainScene = function(game) {
     var wasteSound = game.assets[SND_WASTE]; //クシャっとするときの効果音
     var flySound = game.assets[SND_FLY];
     var passSound = game.assets[SND_PASS];
-
-    var startFrame;
 
     var markOk = game.assets[IMG_MARK_CIRCLE];
     var markNg = game.assets[IMG_MARK_X];
@@ -214,7 +212,6 @@ var createMainScene = function(game) {
         if (e.y < 60) return;
 
         touch.begin = e;
-        touch.current = e;
         from.x = paper.sprite.x;
         from.y = paper.sprite.y;
         prevPoint = e;
@@ -227,13 +224,14 @@ var createMainScene = function(game) {
         //if (!isGameStart) return;
         if (!touching) return;
 
-        prevPoint = touch.current;
-        touch.current = e;
+        touch.velocity.x = e.x - prevPoint.x;
+        touch.velocity.y = e.y - prevPoint.y;
+        prevPoint = e;
         if (touching) {
             if (paper.state == "wasted") {
-                paper.sprite.moveTo(from.x, from.y + touch.current.y - touch.begin.y);
+                paper.sprite.moveTo(from.x, from.y + e.y - touch.begin.y);
             } else if (paper.state == "new") {
-                paper.sprite.moveTo(from.x + touch.current.x - touch.begin.x, from.y);
+                paper.sprite.moveTo(from.x + e.x - touch.begin.x, from.y);
             }
         }
         moved = true;
@@ -266,7 +264,7 @@ var createMainScene = function(game) {
             return;
         }
 
-        if (paper.state == "wasted" && prevPoint.y - e.y >= THRS) {
+        if (paper.state == "wasted" && touch.velocity.y < -THRS) {
             paper.state = "throw";
 
             // throw old paper away
@@ -287,7 +285,7 @@ var createMainScene = function(game) {
             }
 
             placeNewPaper();
-        } else if (paper.state == "new" && prevPoint.x - e.x >= THRS) {
+        } else if (paper.state == "new" && touch.velocity.x < -THRS) {
             paper.state = "get";
 
             // save old paper
