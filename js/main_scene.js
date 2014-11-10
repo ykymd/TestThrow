@@ -197,6 +197,8 @@ var createMainScene = function(game) {
 
             scene.removeChild(paper.sprite);
             paper.sprite = group;
+            
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
             return;
         }
 
