@@ -1,3 +1,4 @@
+
 var Button = Class.create(Sprite, {
     initialize: function(width, height) {
         Sprite.call(this, width, height);
@@ -96,3 +97,10 @@ var Timer = Class.create(Group, {
         return this.tl.repeat(tick, duration * this.fps);
     }
 });
+
+Sprite.prototype.fitToSize = function(width, height) {
+    this.originX = 0;
+    this.originY = 0;
+    this.scaleX = width / this.width;
+    this.scaleY = height / this.height;
+};

@@ -70,10 +70,7 @@ var createResultScene = function(game) {
     var correctMark = new Sprite( MARK_IMG_WIDTH, MARK_IMG_HEIGHT );
     correctMark.image = markImage;
     correctMark.frame = 2;
-    correctMark.originX = 0;
-    correctMark.originY = 0;
-    correctMark.scaleX = size.width / MARK_IMG_WIDTH;
-    correctMark.scaleY = size.height / MARK_IMG_HEIGHT;
+    correctMark.fitToSize(size.width, size.height);
     correctMark.moveTo( CORRECT_MARK_X, CORRECT_MARK_Y );
     scene.addChild(correctMark);
     
@@ -100,10 +97,7 @@ var createResultScene = function(game) {
     var size = {'width': 90, 'height': 66};
     failMark.image = markImage;
     failMark.frame = 0;
-    failMark.originX = 0;
-    failMark.originY = 0;
-    failMark.scaleX = size.width / MARK_IMG_WIDTH;
-    failMark.scaleY = size.height / MARK_IMG_HEIGHT;
+    failMark.fitToSize(size.width, size.height);
     failMark.moveTo( FAIL_MARK_X, FAIL_MARK_Y );
     scene.addChild(failMark);
     
@@ -112,10 +106,7 @@ var createResultScene = function(game) {
     var backButton = new Sprite( BACK_IMG_WIDTH, BACK_IMG_HEIGHT );
     var size = {'width': 40, 'height': 40};
     backButton.image = game.assets[IMG_BACK];
-    backButton.originX = 0;
-    backButton.originY = 0;
-    backButton.scaleX = size.width / BACK_IMG_WIDTH;
-    backButton.scaleY = size.height / BACK_IMG_HEIGHT;
+    backButton.fitToSize(size.width, size.height);
     backButton.moveTo(5,5);
     backButton.tl.hide();
     scene.addChild(backButton);

@@ -15,10 +15,7 @@ var createPauseScene = function(game) {
 
     var resume = new Button(resume_image.width, resume_image.height);
     resume.image = resume_image;
-    resume.originX = 0;
-    resume.originY = 0;
-    resume.scaleX = size.width / resume_image.width;
-    resume.scaleY = size.height / resume_image.height;
+    resume.fitToSize(size.width, size.height);
     resume.moveTo((game.width - size.width) / 2, (game.height - size.height - gap) / 2 - size.height);
     resume.addEventListener('tap', function() {
                             game.popScene();
@@ -27,10 +24,7 @@ var createPauseScene = function(game) {
 
     var back = new Button(back_image.width, back_image.height);
     back.image = back_image;
-    back.originX = 0;
-    back.originY = 0;
-    back.scaleX = size.width / back_image.width;
-    back.scaleY = size.height / back_image.height;
+    back.fitToSize(size.width, size.height);
     back.moveTo((game.width - size.width) / 2, (game.height - size.height - gap) / 2 + gap / 2);
     back.addEventListener('tap', function() {
                           game.removeScene(scene);

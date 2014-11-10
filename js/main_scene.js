@@ -23,10 +23,7 @@ var createMainScene = function(game) {
 
     var bgImage = new Sprite(1280, 1920);
     bgImage.image = game.assets[IMG_TRASH];
-    bgImage.originX = 0;
-    bgImage.originY = 0;
-    bgImage.scaleX = (game.width / bgImage.width);
-    bgImage.scaleY = (game.height / bgImage.height);
+    bgImage.fitToSize(game.width, game.height);
     bgImage.moveTo(0, 0);
 
     var bgRayer = new Sprite(game.width, game.height);
@@ -114,10 +111,7 @@ var createMainScene = function(game) {
             var image = (paper.isSuccessed()) ? markOk : markNg;
             var sprite = new Sprite(image.width, image.height);
             sprite.image = image;
-            sprite.originX = 0;
-            sprite.originY = 0;
-            sprite.scaleX = size.width / image.width;
-            sprite.scaleY = size.height / image.height;
+            sprite.fitToSize(size.width, size.height);
             sprite.moveTo(20, i * 80 + 20);
 
             paper.sprite.addChild(sprite);
@@ -141,10 +135,7 @@ var createMainScene = function(game) {
                 } else {
                     guide.moveTo(PAPER_DEFAULT_X + PAPER_W / 2 - size.width / 2, PAPER_DEFAULT_Y - 10 - size.height);
                 }
-                guide.originX = 0;
-                guide.originY = 0;
-                guide.scaleX = .25;
-                guide.scaleY = .25;
+                guide.fitToSize(size.width, size.height);
                 scene.addChild(guide);
             });
         }
@@ -290,10 +281,7 @@ var createMainScene = function(game) {
     };
     var pauseButton = new Button(pauseImage.width, pauseImage.height);
     pauseButton.image = pauseImage;
-    pauseButton.originX = 0;
-    pauseButton.originY = 0;
-    pauseButton.scaleX = pauseSize.width / pauseImage.width;
-    pauseButton.scaleY = pauseSize.height / pauseImage.height;
+    pauseButton.fitToSize(pauseSize.width, pauseSize.height);
     pauseButton.moveTo(10, 10);
     pauseButton.addEventListener('tap', function() {
         game.pushScene(createPauseScene(game));
