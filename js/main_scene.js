@@ -127,6 +127,7 @@ var createMainScene = function(game) {
                     width: image.width / 4,
                     height: image.height / 4
                 };
+                if (guide) scene.removeChild(guide);
                 guide = new Sprite(image.width, image.height);
                 guide.image = image;
                 if (paper.isSuccessed()) {
