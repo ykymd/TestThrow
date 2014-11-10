@@ -41,7 +41,7 @@ var Timer = Class.create(Group, {
             var seconds = Math.floor((duration * this.fps - elapsed) / this.fps);
             if (seconds < 10) {
                 number.scaleX = 1.0;
-                number.x = 250 + 18;
+                number.x = 18;
             }
             number.setText(seconds.toFixed(0));
         };
