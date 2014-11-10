@@ -117,7 +117,6 @@ var createMainScene = function(game) {
     function TouchProperty() {
         this.x = 0;
         this.y = 0;
-        this.time = 0;
         return this;
     }
 
@@ -129,13 +128,9 @@ var createMainScene = function(game) {
         'current': new TouchProperty()
     };
 
-    var prevPoint = [];
-    const PREV_COUNT = 2;
-    for (var i = 0; i < PREV_COUNT; i++) {
-        prevPoint[i] = new TouchProperty();
-    }
+    var prevPoint = new TouchProperty();
     var from = new TouchProperty();
-    const THRS = 6;
+    const THRS = 3;
     const MOVE_TIME = 0.4;
     const VELOCITY = -130;
 
@@ -218,17 +213,11 @@ var createMainScene = function(game) {
         if (!isGameStart) return;
         if (e.y < 60) return;
 
-        touch.begin.x = e.x;
-        touch.begin.y = e.y;
-        touch.begin.time = (new Date()).getTime();
-        touch.current.x = e.x;
-        touch.current.y = e.y;
+        touch.begin = e;
+        touch.current = e;
         from.x = paper.sprite.x;
         from.y = paper.sprite.y;
-        for (var i = 0; i < PREV_COUNT; i++) {
-            prevPoint[i].x = e.x;
-            prevPoint[i].y = e.y;
-        }
+        prevPoint = e;
         touching = true;
         moved = false;
 
@@ -238,8 +227,8 @@ var createMainScene = function(game) {
         //if (!isGameStart) return;
         if (!touching) return;
 
-        touch.current.x = e.x;
-        touch.current.y = e.y;
+        prevPoint = touch.current;
+        touch.current = e;
         if (touching) {
             if (paper.state == "wasted") {
                 paper.sprite.moveTo(from.x, from.y + touch.current.y - touch.begin.y);
@@ -248,13 +237,6 @@ var createMainScene = function(game) {
             }
         }
         moved = true;
-
-        for (var i = PREV_COUNT - 1; i > 0; i--) {
-            prevPoint[i].x = prevPoint[i - 1].x;
-            prevPoint[i].y = prevPoint[i - 1].y;
-        }
-        prevPoint[0].x = touch.current.x;
-        prevPoint[0].y = touch.current.y;
     });
     scene.addEventListener(Event.TOUCH_END, function(e) {
         // for debug
@@ -264,9 +246,6 @@ var createMainScene = function(game) {
         if (!touching) return;
 
         touching = false;
-        touch.end.x = e.x;
-        touch.end.y = e.y;
-        touch.end.time = (new Date()).getTime();
 
         if (!moved) {
             wasteSound.play();
@@ -287,7 +266,7 @@ var createMainScene = function(game) {
             return;
         }
 
-        if (paper.state == "wasted" && prevPoint[PREV_COUNT - 1].y - touch.end.y >= THRS) {
+        if (paper.state == "wasted" && prevPoint.y - e.y >= THRS) {
             paper.state = "throw";
 
             // throw old paper away
@@ -308,7 +287,7 @@ var createMainScene = function(game) {
             }
 
             placeNewPaper();
-        } else if (paper.state == "new" && prevPoint[PREV_COUNT - 1].x - touch.end.x >= THRS) {
+        } else if (paper.state == "new" && prevPoint.x - e.x >= THRS) {
             paper.state = "get";
 
             // save old paper
