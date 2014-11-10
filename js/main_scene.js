@@ -1,7 +1,7 @@
 var Timer = Class.create(Group, {
     initialize: function(fps) {
         Group.call(this);
-        
+
         this.fps = fps;
 
         var radius = 30;
@@ -24,7 +24,7 @@ var Timer = Class.create(Group, {
         number.fontSize = 32;
         number.scaleX = .5;
         this.addChild(number);
-        
+
         this.tick = function(duration) {
             var elapsed = this.age - this.startFrame;
             var surface = new Surface(2 * radius + 2, 2 * radius + 2);
@@ -47,11 +47,29 @@ var Timer = Class.create(Group, {
         };
     },
     after: function(duration) {
-        var tick = function() { this.tick(duration); };
+        var tick = function() {
+            this.tick(duration);
+        };
         this.startFrame = this.age;
         return this.tl.repeat(tick, duration * this.fps);
     }
 });
+
+function createGameOverScene(game) {
+    var gameOverScene = new Scene();
+
+    //"GAMEOVER"の文字の表示
+    var l_over = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
+    l_over.image = game.assets[IMG_GAMEOVER];
+    l_over.moveTo(game.width, game.height / 2 - l_over.height / 2);
+    l_over.tl.moveTo(0, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).then(function() {
+        game.removeScene(gameOverScene);
+        game.replaceScene(createResultScene(game));
+    });
+    gameOverScene.addChild(l_over);
+
+    return gameOverScene;
+}
 
 var createMainScene = function(game) {
     console.log("Main Scene");
@@ -315,7 +333,7 @@ var createMainScene = function(game) {
         }
 
     });
-    
+
     var timer = new Timer(game.fps);
     timer.moveTo(250, 10);
 
@@ -335,25 +353,13 @@ var createMainScene = function(game) {
         //player.canclick = true;
 
         // After 30 seconds, game is over.
-        timer.after(30).exec(gameOver);
+        timer.after(30).then(function() {
+            game.scores = scores;
+            game.pushScene(createGameOverScene(game));
+        });
         this.parentNode.removeChild(l_start);
         placeNewPaper();
     });
-
-    //"GAMEOVER"の文字の表示
-    l_over = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
-    l_over.image = game.assets[IMG_GAMEOVER];
-    l_over.visible = true;
-    l_over.moveTo(game.width, game.height / 2 - l_over.height / 2);
-    var gameOver = function() {
-        scene.addChild(l_over);
-        l_over.tl.moveTo(0, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).then(function() {
-            l_over.visible = false;
-            game.scores = scores;
-            game.replaceScene(createResultScene(game));
-        });
-        isGameStart = false;
-    };
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
