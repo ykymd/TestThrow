@@ -1,4 +1,3 @@
-
 TestThrow.prototype.gotoGameOverScene = function() {
     var thi$ = this;
     var gameOverScene = new Scene();
@@ -258,6 +257,7 @@ TestThrow.prototype.gotoMainScene = function() {
     timer.moveTo(250, 10);
 
     //"START"の文字の表示
+    var startScene = new Scene();
     var l_start = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
     var labelSize = {
         'width': 320,
@@ -270,6 +270,7 @@ TestThrow.prototype.gotoMainScene = function() {
     l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
         l_start.visible = false;
         isGameStart = true;
+        thi$.popScene();
         //player.canclick = true;
 
         // After 30 seconds, game is over.
@@ -280,6 +281,7 @@ TestThrow.prototype.gotoMainScene = function() {
         this.parentNode.removeChild(l_start);
         placeNewPaper();
     });
+    startScene.addChild(l_start);
 
     // pause menu
     var pauseImage = thi$.assets[BTN_PAUSE];
@@ -299,8 +301,8 @@ TestThrow.prototype.gotoMainScene = function() {
     scene.addChild(bgImage);
     scene.addChild(bgRayer);
     scene.addChild(pauseButton);
-    scene.addChild(l_start);
     scene.addChild(timer);
 
     this.replaceScene(scene);
+    this.pushScene(startScene);
 };
