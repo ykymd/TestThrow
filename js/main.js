@@ -1,9 +1,10 @@
 enchant();
 
+var TestThrow = Class.create(Game, {});
+
 window.onload = function() {
-    var game = new Game(320, 480);
-    game.fps = 30;
-    
+    var game = new TestThrow(320, 480);
+
     game.preload(IMG_PAPER, IMG_TRASH,
                  IMG_TITLE,
                  BTN_PAUSE,
@@ -21,7 +22,7 @@ window.onload = function() {
                  SND_PASS);
 
     game.onload = function() {
-        game.replaceScene(createTitleScene(game));
+        game.gotoTitleScene();
     };
     game.start();
 };

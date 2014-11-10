@@ -1,4 +1,8 @@
 
+TestThrow.prototype.gotoGameOverScene = function() {
+    this.pushScene(createGameOverScene(this));
+};
+
 function createGameOverScene(game) {
     var gameOverScene = new Scene();
 
@@ -14,6 +18,10 @@ function createGameOverScene(game) {
 
     return gameOverScene;
 }
+
+TestThrow.prototype.gotoMainScene = function() {
+    this.replaceScene(createMainScene(this));
+};
 
 var createMainScene = function(game) {
     console.log("Main Scene");
@@ -66,7 +74,10 @@ var createMainScene = function(game) {
     var touch = {
         'begin': new TouchProperty(),
         'end': new TouchProperty(),
-        velocity: {x: 0, y: 0}
+        velocity: {
+            x: 0,
+            y: 0
+        }
     };
 
     var prevPoint = new TouchProperty();
@@ -270,7 +281,7 @@ var createMainScene = function(game) {
         // After 30 seconds, game is over.
         timer.after(30).then(function() {
             game.scores = scores;
-            game.pushScene(createGameOverScene(game));
+            game.gotoGameOverScene();
         });
         this.parentNode.removeChild(l_start);
         placeNewPaper();
@@ -287,7 +298,7 @@ var createMainScene = function(game) {
     pauseButton.fitToSize(pauseSize.width, pauseSize.height);
     pauseButton.moveTo(10, 10);
     pauseButton.addEventListener('tap', function() {
-        game.pushScene(createPauseScene(game));
+        game.gotoPauseScene();
     });
 
     // drawing

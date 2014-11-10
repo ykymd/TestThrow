@@ -1,3 +1,6 @@
+TestThrow.prototype.gotoTitleScene = function() {
+    this.replaceScene(createTitleScene(this));
+};
 
 var createTitleScene = function(game) {
     console.log("Title Scene");
@@ -22,7 +25,7 @@ var createTitleScene = function(game) {
         scene.addChild(curtain);
 
         curtain.tl.delay(.25 * game.fps).fadeIn(.25 * game.fps).exec(function() {
-            game.pushScene(createSelectScene(game));
+            game.gotoSelectScene();
         });
     });
 

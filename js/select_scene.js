@@ -1,3 +1,7 @@
+TestThrow.prototype.gotoSelectScene = function() {
+    this.pushScene(createSelectScene(this));
+};
+
 var createSelectScene = function(game) {
     console.log("Select Scene");
     var scene = new Scene();
@@ -29,7 +33,7 @@ var createSelectScene = function(game) {
             curtain.tl.fadeIn(.25 * game.fps).exec(function() {
                 game.stage = this.frame;
                 game.removeScene(scene);
-                game.replaceScene(createMainScene(game));
+                game.gotoMainScene();
             });
             scene.addChild(curtain);
         });
