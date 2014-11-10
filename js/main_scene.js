@@ -1,40 +1,34 @@
 
 TestThrow.prototype.gotoGameOverScene = function() {
-    this.pushScene(createGameOverScene(this));
-};
-
-function createGameOverScene(game) {
+    var thi$ = this;
     var gameOverScene = new Scene();
 
     //"GAMEOVER"の文字の表示
     var l_over = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
-    l_over.image = game.assets[IMG_GAMEOVER];
-    l_over.moveTo(game.width, game.height / 2 - l_over.height / 2);
-    l_over.tl.moveTo(0, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-game.width, game.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).then(function() {
-        game.removeScene(gameOverScene);
-        game.replaceScene(createResultScene(game));
+    l_over.image = thi$.assets[IMG_GAMEOVER];
+    l_over.moveTo(thi$.width, thi$.height / 2 - l_over.height / 2);
+    l_over.tl.moveTo(0, thi$.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-thi$.width, thi$.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).then(function() {
+        thi$.removeScene(gameOverScene);
+        thi$.gotoResultScene();
     });
     gameOverScene.addChild(l_over);
 
-    return gameOverScene;
+    this.pushScene(gameOverScene);
 }
 
 TestThrow.prototype.gotoMainScene = function() {
-    this.replaceScene(createMainScene(this));
-};
-
-var createMainScene = function(game) {
     console.log("Main Scene");
 
     // initialize
+    var thi$ = this;
     var scene = new Scene();
 
     var bgImage = new Sprite(1280, 1920);
-    bgImage.image = game.assets[IMG_TRASH];
-    bgImage.fitToSize(game.width, game.height);
+    bgImage.image = thi$.assets[IMG_TRASH];
+    bgImage.fitToSize(thi$.width, thi$.height);
     bgImage.moveTo(0, 0);
 
-    var bgRayer = new Sprite(game.width, game.height);
+    var bgRayer = new Sprite(thi$.width, thi$.height);
     bgRayer.backgroundColor = '#FFF';
     bgRayer.opacity = 0.5;
 
@@ -51,8 +45,8 @@ var createMainScene = function(game) {
     const PAPER_DEFAULT_Y = 90;
     const PAPER_W = 200;
     const PAPER_H = 300;
-    const PAPER_IMG_W = game.assets[IMG_PAPER].width / Object.keys(Paper_frame).length;
-    const PAPER_IMG_H = game.assets[IMG_PAPER].height;
+    const PAPER_IMG_W = thi$.assets[IMG_PAPER].width / Object.keys(Paper_frame).length;
+    const PAPER_IMG_H = thi$.assets[IMG_PAPER].height;
     var paper = {
         sprite: null,
         state: "new",
@@ -93,23 +87,23 @@ var createMainScene = function(game) {
         ngMax: 0
     };
 
-    var wasteSound = game.assets[SND_WASTE]; //クシャっとするときの効果音
-    var flySound = game.assets[SND_FLY];
-    var passSound = game.assets[SND_PASS];
+    var wasteSound = thi$.assets[SND_WASTE]; //クシャっとするときの効果音
+    var flySound = thi$.assets[SND_FLY];
+    var passSound = thi$.assets[SND_PASS];
 
-    var markOk = game.assets[IMG_MARK_CIRCLE];
-    var markNg = game.assets[IMG_MARK_X];
+    var markOk = thi$.assets[IMG_MARK_CIRCLE];
+    var markNg = thi$.assets[IMG_MARK_X];
 
     var guide = null;
 
     function placeNewPaper() {
         var pic = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-        pic.image = game.assets[IMG_PAPER];
+        pic.image = thi$.assets[IMG_PAPER];
         pic.frame = Math.floor(Math.random() * 3) % 3 + 1;
 
         paper.sprite = new Group();
         paper.sprite.addChild(pic);
-        paper.sprite.moveTo(game.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y);
+        paper.sprite.moveTo(thi$.width + PAPER_DEFAULT_X, PAPER_DEFAULT_Y);
 
         paper.state = "new";
 
@@ -129,11 +123,11 @@ var createMainScene = function(game) {
         }
 
         scene.addChild(paper.sprite);
-        var tl = paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(MOVE_TIME * game.fps), enchant.Easing.QUINT_EASEOUT);
+        var tl = paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(MOVE_TIME * thi$.fps), enchant.Easing.QUINT_EASEOUT);
 
-        if (game.stage == 0) {
+        if (thi$.stage == 0) {
             tl.exec(function() {
-                var image = game.assets[IMG_CURSOR];
+                var image = thi$.assets[IMG_CURSOR];
                 var size = {
                     width: image.width / 4,
                     height: image.height / 4
@@ -197,7 +191,7 @@ var createMainScene = function(game) {
 
             paper.state = "wasted";
             var sprite = new Sprite(PAPER_IMG_W, PAPER_IMG_H);
-            sprite.image = game.assets[IMG_PAPER];
+            sprite.image = thi$.assets[IMG_PAPER];
             sprite.frame = Paper_frame.CRASH;
 
             var group = new Group();
@@ -218,7 +212,7 @@ var createMainScene = function(game) {
 
             // throw old paper away
             var sprite = paper.sprite;
-            sprite.tl.moveBy(0, VELOCITY * MOVE_TIME * game.fps, Math.floor(MOVE_TIME * game.fps)).removeFromScene();
+            sprite.tl.moveBy(0, VELOCITY * MOVE_TIME * thi$.fps, Math.floor(MOVE_TIME * thi$.fps)).removeFromScene();
             scene.addChild(sprite);
 
             flySound.play(); //効果音を再生
@@ -239,7 +233,7 @@ var createMainScene = function(game) {
 
             // save old paper
             var sprite = paper.sprite;
-            sprite.tl.moveBy(VELOCITY * MOVE_TIME * game.fps, 0, Math.floor(MOVE_TIME * game.fps)).removeFromScene();
+            sprite.tl.moveBy(VELOCITY * MOVE_TIME * thi$.fps, 0, Math.floor(MOVE_TIME * thi$.fps)).removeFromScene();
 
             passSound.play(); //効果音を再生
 
@@ -255,12 +249,12 @@ var createMainScene = function(game) {
 
             placeNewPaper();
         } else {
-            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * thi$.fps), enchant.Easing.QUINT_EASEOUT);
         }
 
     });
 
-    var timer = new Timer(game.fps);
+    var timer = new Timer(thi$.fps);
     timer.moveTo(250, 10);
 
     //"START"の文字の表示
@@ -269,10 +263,10 @@ var createMainScene = function(game) {
         'width': 320,
         'height': 80
     };
-    l_start.image = game.assets[IMG_GAMESTART];
+    l_start.image = thi$.assets[IMG_GAMESTART];
     l_start.scaleX = labelSize.width / GAMESTART_IMG_WIDTH;
     l_start.scaleY = labelSize.height / GAMESTART_IMG_HEIGHT;
-    l_start.moveTo(0, game.width / 2 - GAMESTART_IMG_HEIGHT / 2);
+    l_start.moveTo(0, thi$.width / 2 - GAMESTART_IMG_HEIGHT / 2);
     l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
         l_start.visible = false;
         isGameStart = true;
@@ -280,15 +274,15 @@ var createMainScene = function(game) {
 
         // After 30 seconds, game is over.
         timer.after(30).then(function() {
-            game.scores = scores;
-            game.gotoGameOverScene();
+            thi$.scores = scores;
+            thi$.gotoGameOverScene();
         });
         this.parentNode.removeChild(l_start);
         placeNewPaper();
     });
 
     // pause menu
-    var pauseImage = game.assets[BTN_PAUSE];
+    var pauseImage = thi$.assets[BTN_PAUSE];
     var pauseSize = {
         'width': 60,
         'height': 60
@@ -298,7 +292,7 @@ var createMainScene = function(game) {
     pauseButton.fitToSize(pauseSize.width, pauseSize.height);
     pauseButton.moveTo(10, 10);
     pauseButton.addEventListener('tap', function() {
-        game.gotoPauseScene();
+        thi$.gotoPauseScene();
     });
 
     // drawing
@@ -308,5 +302,5 @@ var createMainScene = function(game) {
     scene.addChild(l_start);
     scene.addChild(timer);
 
-    return scene;
+    this.replaceScene(scene);
 };

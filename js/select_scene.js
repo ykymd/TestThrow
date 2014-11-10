@@ -1,14 +1,11 @@
 TestThrow.prototype.gotoSelectScene = function() {
-    this.pushScene(createSelectScene(this));
-};
-
-var createSelectScene = function(game) {
     console.log("Select Scene");
+    var thi$ = this;
     var scene = new Scene();
     scene.backgroundColor = '#0DD';
 
-    var select_button = game.assets[SELECT_MENU];
-    var enterSound = game.assets[SND_THROW]; //決定時の効果音
+    var select_button = thi$.assets[SELECT_MENU];
+    var enterSound = thi$.assets[SND_THROW]; //決定時の効果音
     var numOfStages = (localStorage.stages) ? localStorage.stages : 1;
     numOfStages = 8;
     var buttons = new Group();
@@ -24,16 +21,16 @@ var createSelectScene = function(game) {
         sprite.frame = i; //画像指定
         sprite.fitToSize(size.width, size.height);
         sprite.backgroundColor = '#0' + i + i;
-        sprite.moveTo((game.width - size.width) / 2, i * (size.height + margin) + margin);
+        sprite.moveTo((thi$.width - size.width) / 2, i * (size.height + margin) + margin);
         sprite.addEventListener('tap', function() {
-            var curtain = new Sprite(game.width, game.height);
+            var curtain = new Sprite(thi$.width, thi$.height);
             curtain.backgroundColor = '#0';
             curtain.opacity = 0;
             enterSound.play();
-            curtain.tl.fadeIn(.25 * game.fps).exec(function() {
-                game.stage = this.frame;
-                game.removeScene(scene);
-                game.gotoMainScene();
+            curtain.tl.fadeIn(.25 * thi$.fps).exec(function() {
+                thi$.stage = this.frame;
+                thi$.removeScene(scene);
+                thi$.gotoMainScene();
             });
             scene.addChild(curtain);
         });
@@ -44,9 +41,9 @@ var createSelectScene = function(game) {
     }
     scene.addChild(buttons);
 
-    var curtain = new Sprite(game.width, game.height);
+    var curtain = new Sprite(thi$.width, thi$.height);
     curtain.backgroundColor = '#000';
-    curtain.tl.fadeOut(.25 * game.fps).removeFromScene();
+    curtain.tl.fadeOut(.25 * thi$.fps).removeFromScene();
     scene.addChild(curtain);
 
     buttons.height = numOfStages * (size.height + margin) + margin;
@@ -63,8 +60,8 @@ var createSelectScene = function(game) {
                 pressedButton = null;
             }
             buttons.y = startY + e.y - touchPosition.y;
-            if (buttons.y < game.height - buttons.height) {
-                buttons.y = game.height - buttons.height;
+            if (buttons.y < thi$.height - buttons.height) {
+                buttons.y = thi$.height - buttons.height;
             }
             if (buttons.y > 0) {
                 buttons.y = 0;
@@ -75,5 +72,5 @@ var createSelectScene = function(game) {
         touchPosition = null;
     });
 
-    return scene;
+    this.pushScene(scene);
 };

@@ -1,16 +1,13 @@
 TestThrow.prototype.gotoResultScene = function() {
-    this.replaceScene(createResultScene());
-};
-
-var createResultScene = function(game) {
-
     const MULTIPLY = 2;
 
+    var thi$ = this;
+
     var score = {
-        'correct': game.scores.ok,
-        'fail': game.scores.ng,
-        'gpa': 4.0 * (game.scores.ok + game.scores.ng) / (game.scores.okMax + game.scores.ngMax),
-        'grade': (game.scores.ok + game.scores.ng) * MULTIPLY
+        'correct': thi$.scores.ok,
+        'fail': thi$.scores.ng,
+        'gpa': 4.0 * (thi$.scores.ok + thi$.scores.ng) / (thi$.scores.okMax + thi$.scores.ngMax),
+        'grade': (thi$.scores.ok + thi$.scores.ng) * MULTIPLY
     };
     var scene = new Scene();
 
@@ -42,7 +39,7 @@ var createResultScene = function(game) {
     const GPA_SCORE_Y = 370;
 
 
-    var markImage = game.assets[IMG_MARK];
+    var markImage = thi$.assets[IMG_MARK];
     // console.log("image loaded");
 
     var hline = new Surface(300, 1);
@@ -59,7 +56,7 @@ var createResultScene = function(game) {
 
     var correctScore = new MutableText(CORRECT_SCORE_X, CORRECT_SCORE_Y, 100);
     correctScore.fontSize = 32;
-    correctScore.setText('' + score.correct + '/' + game.scores.okMax.toFixed(0));
+    correctScore.setText('' + score.correct + '/' + thi$.scores.okMax.toFixed(0));
     correctScore.tl.hide();
     var showCorrectScore = function() {
         correctScore.tl.show();
@@ -91,7 +88,7 @@ var createResultScene = function(game) {
 
     var failScore = new MutableText(FAIL_SCORE_X, FAIL_SCORE_Y, 100);
     failScore.fontSize = 32;
-    failScore.setText('' + score.fail + '/' + game.scores.ngMax.toFixed(0));
+    failScore.setText('' + score.fail + '/' + thi$.scores.ngMax.toFixed(0));
     failScore.tl.hide();
     var showFailScore = function() {
         failScore.tl.show();
@@ -121,13 +118,13 @@ var createResultScene = function(game) {
         'width': 40,
         'height': 40
     };
-    backButton.image = game.assets[IMG_BACK];
+    backButton.image = thi$.assets[IMG_BACK];
     backButton.fitToSize(size.width, size.height);
     backButton.moveTo(5, 5);
     backButton.tl.hide();
     scene.addChild(backButton);
     backButton.addEventListener(Event.TOUCH_START, function(e) {
-        game.gotoTitleScene();
+        thi$.gotoTitleScene();
     });
     var showBackbutton = function() {
         backButton.tl.show();
@@ -163,11 +160,11 @@ var createResultScene = function(game) {
 
     scene.backgroundColor = '#FFF';
 
-    scene.tl.delay(DELAY * game.fps).exec(showCorrectScore);
-    scene.tl.delay(DELAY * game.fps).exec(showFailScore);
-    scene.tl.delay(DELAY * game.fps).exec(showGrade);
-    scene.tl.delay(DELAY * game.fps).exec(showGpa);
-    scene.tl.delay(DELAY * game.fps).exec(showBackbutton);
+    scene.tl.delay(DELAY * thi$.fps).exec(showCorrectScore);
+    scene.tl.delay(DELAY * thi$.fps).exec(showFailScore);
+    scene.tl.delay(DELAY * thi$.fps).exec(showGrade);
+    scene.tl.delay(DELAY * thi$.fps).exec(showGpa);
+    scene.tl.delay(DELAY * thi$.fps).exec(showBackbutton);
 
-    return scene;
+    this.replaceScene(scene);
 };
