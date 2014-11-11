@@ -6,6 +6,7 @@ var createSelectScene = function(game) {
     var select_button = game.assets[SELECT_MENU];
     var enterSound = game.assets[SND_THROW];  //決定時の効果音
     var numOfStages = (localStorage.stages) ? localStorage.stages : 1;
+    numOfStages = 8;
     var buttons = new Group();
     var size = { 'width': 225, 'height': 100 };
     var margin = 30;
