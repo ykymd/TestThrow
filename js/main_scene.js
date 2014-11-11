@@ -212,16 +212,15 @@ MainScene.prototype.becomeCurrentScene = function() {
     };
     var paper = this.paper;
 
-    var moved = false;
     var touch = {
         begin: null,
+        prev: null,
         velocity: {
             x: 0,
             y: 0
         }
     };
 
-    var prevPoint;
     var from = {
         x: 0,
         y: 0
@@ -280,24 +279,28 @@ MainScene.prototype.becomeCurrentScene = function() {
     // game main
     scene.addEventListener(Event.TOUCH_START, function(e) {
         /* pauseButton.y + pauseButton.height */
-        if (e.y < 70) return;
+        if (e.y < 70) {
+            touch.begin = null;
+            return;
+        }
 
         touch.begin = e;
-        prevPoint = e;
+        touch.prev = e;
+        touch.velocity = {
+            x: 0,
+            y: 0
+        };
         from.x = paper.sprite.x;
         from.y = paper.sprite.y;
-
-        moved = false;
 
         if (scene.guide) scene.removeChild(scene.guide);
     });
     scene.addEventListener(Event.TOUCH_MOVE, function(e) {
         if (!touch.begin) return;
 
-        touch.velocity.x = e.x - prevPoint.x;
-        touch.velocity.y = e.y - prevPoint.y;
-        prevPoint = e;
-        moved = true;
+        touch.velocity.x = e.x - touch.prev.x;
+        touch.velocity.y = e.y - touch.prev.y;
+        touch.prev = e;
 
         if (paper.state == "wasted") {
             paper.sprite.moveTo(from.x, from.y + e.y - touch.begin.y);
@@ -310,13 +313,6 @@ MainScene.prototype.becomeCurrentScene = function() {
         // gameOver();
 
         if (!touch.begin) return;
-        touch.begin = null;
-
-        if (!moved) {
-            scene.crumple();
-            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
-            return;
-        }
 
         if (paper.state == "wasted" && touch.velocity.y < -THRS) {
             scene.throwAway();
@@ -325,7 +321,7 @@ MainScene.prototype.becomeCurrentScene = function() {
             scene.keep();
             scene.placeNewPaper();
         } else {
-
+            if (touch.begin == touch.prev) scene.crumple();
             paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
         }
 
