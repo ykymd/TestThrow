@@ -1,59 +1,3 @@
-var Timer = Class.create(Group, {
-    initialize: function(fps) {
-        Group.call(this);
-
-        this.fps = fps;
-
-        var radius = 30;
-        var surface = new Surface(2 * radius + 2, 2 * radius + 2);
-        var ctx = surface.context;
-        ctx.beginPath();
-        ctx.arc(radius + 1, radius + 1, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#CCF';
-        ctx.fill();
-        ctx.stroke();
-
-        var circle = new Sprite(2 * radius + 2, 2 * radius + 2);
-        circle.image = surface;
-        this.addChild(circle);
-
-        var arc = new Sprite(2 * radius + 2, 2 * radius + 2);
-        this.addChild(arc);
-
-        var number = new MutableText(-30, 18, 100);
-        number.fontSize = 32;
-        number.scaleX = .5;
-        this.addChild(number);
-
-        this.tick = function(duration) {
-            var elapsed = this.age - this.startFrame;
-            var surface = new Surface(2 * radius + 2, 2 * radius + 2);
-            var ctx = surface.context;
-            ctx.moveTo(radius + 1, radius + 1);
-            ctx.lineTo(radius + 1, 1);
-            ctx.arc(radius + 1, radius + 1, radius, -0.5 * Math.PI, -0.48 * Math.PI + 2 * Math.PI * elapsed / (duration * this.fps));
-            ctx.lineTo(radius + 1, radius + 1);
-            ctx.fillStyle = '#FCC';
-            ctx.fill();
-            ctx.stroke();
-            arc.image = surface;
-
-            var seconds = Math.floor((duration * this.fps - elapsed) / this.fps);
-            if (seconds < 10) {
-                number.scaleX = 1.0;
-                number.x = 18;
-            }
-            number.setText(seconds.toFixed(0));
-        };
-    },
-    after: function(duration) {
-        var tick = function() {
-            this.tick(duration);
-        };
-        this.startFrame = this.age;
-        return this.tl.repeat(tick, duration * this.fps);
-    }
-});
 
 function createGameOverScene(game) {
     var gameOverScene = new Scene();
@@ -79,10 +23,7 @@ var createMainScene = function(game) {
 
     var bgImage = new Sprite(1280, 1920);
     bgImage.image = game.assets[IMG_TRASH];
-    bgImage.originX = 0;
-    bgImage.originY = 0;
-    bgImage.scaleX = (game.width / bgImage.width);
-    bgImage.scaleY = (game.height / bgImage.height);
+    bgImage.fitToSize(game.width, game.height);
     bgImage.moveTo(0, 0);
 
     var bgRayer = new Sprite(game.width, game.height);
@@ -170,10 +111,7 @@ var createMainScene = function(game) {
             var image = (paper.isSuccessed()) ? markOk : markNg;
             var sprite = new Sprite(image.width, image.height);
             sprite.image = image;
-            sprite.originX = 0;
-            sprite.originY = 0;
-            sprite.scaleX = size.width / image.width;
-            sprite.scaleY = size.height / image.height;
+            sprite.fitToSize(size.width, size.height);
             sprite.moveTo(20, i * 80 + 20);
 
             paper.sprite.addChild(sprite);
@@ -189,6 +127,7 @@ var createMainScene = function(game) {
                     width: image.width / 4,
                     height: image.height / 4
                 };
+                if (guide) scene.removeChild(guide);
                 guide = new Sprite(image.width, image.height);
                 guide.image = image;
                 if (paper.isSuccessed()) {
@@ -197,10 +136,7 @@ var createMainScene = function(game) {
                 } else {
                     guide.moveTo(PAPER_DEFAULT_X + PAPER_W / 2 - size.width / 2, PAPER_DEFAULT_Y - 10 - size.height);
                 }
-                guide.originX = 0;
-                guide.originY = 0;
-                guide.scaleX = .25;
-                guide.scaleY = .25;
+                guide.fitToSize(size.width, size.height);
                 scene.addChild(guide);
             });
         }
@@ -261,6 +197,8 @@ var createMainScene = function(game) {
 
             scene.removeChild(paper.sprite);
             paper.sprite = group;
+            
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
             return;
         }
 
@@ -346,10 +284,7 @@ var createMainScene = function(game) {
     };
     var pauseButton = new Button(pauseImage.width, pauseImage.height);
     pauseButton.image = pauseImage;
-    pauseButton.originX = 0;
-    pauseButton.originY = 0;
-    pauseButton.scaleX = pauseSize.width / pauseImage.width;
-    pauseButton.scaleY = pauseSize.height / pauseImage.height;
+    pauseButton.fitToSize(pauseSize.width, pauseSize.height);
     pauseButton.moveTo(10, 10);
     pauseButton.addEventListener('tap', function() {
         game.pushScene(createPauseScene(game));
