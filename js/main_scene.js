@@ -31,8 +31,6 @@ TestThrow.prototype.gotoMainScene = function() {
     bgRayer.backgroundColor = '#FFF';
     bgRayer.opacity = 0.5;
 
-    isGameStart = false; //ゲーム開始中か？
-
     const Paper_frame = {
         'SAIRI': 0,
         'MATH': 1,
@@ -148,7 +146,6 @@ TestThrow.prototype.gotoMainScene = function() {
 
     // game main
     scene.addEventListener(Event.TOUCH_START, function(e) {
-        if (!isGameStart) return;
         if (e.y < 60) return;
 
         touch.begin = e;
@@ -161,7 +158,6 @@ TestThrow.prototype.gotoMainScene = function() {
         if (guide) scene.removeChild(guide);
     });
     scene.addEventListener(Event.TOUCH_MOVE, function(e) {
-        //if (!isGameStart) return;
         if (!touching) return;
 
         touch.velocity.x = e.x - prevPoint.x;
@@ -180,7 +176,6 @@ TestThrow.prototype.gotoMainScene = function() {
         // for debug
         // gameOver();
 
-        //if (!isGameStart) return;
         if (!touching) return;
 
         touching = false;
@@ -269,7 +264,6 @@ TestThrow.prototype.gotoMainScene = function() {
     l_start.moveTo(0, thi$.width / 2 - GAMESTART_IMG_HEIGHT / 2);
     l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
         l_start.visible = false;
-        isGameStart = true;
         thi$.popScene();
         //player.canclick = true;
 
