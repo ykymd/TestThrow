@@ -146,8 +146,6 @@ MainScene.prototype.crumple = function() {
     scene.removeChild(paper.sprite);
     scene.addChild(group);
     paper.sprite = group;
-
-    paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
 };
 
 // throw old paper away
@@ -156,7 +154,7 @@ MainScene.prototype.throwAway = function() {
     var game = this.game;
     var scene = this;
     var flySound = this.flySound;
-    var scores = this.scores;
+    var scores = game.scores;
     var sprite = paper.sprite;
     sprite.tl.moveBy(0, VELOCITY * MOVE_TIME * game.fps, Math.floor(MOVE_TIME * game.fps)).removeFromScene();
     scene.addChild(sprite);
@@ -179,7 +177,7 @@ MainScene.prototype.keep = function() {
     var paper = this.paper;
     var game = this.game;
     var passSound = this.passSound;
-    var scores = this.scores;
+    var scores = game.scores;
     var sprite = paper.sprite;
     sprite.tl.moveBy(VELOCITY * MOVE_TIME * game.fps, 0, Math.floor(MOVE_TIME * game.fps)).removeFromScene();
 
@@ -199,14 +197,9 @@ MainScene.prototype.keep = function() {
 MainScene.prototype.becomeCurrentScene = function() {
     console.log("Main Scene");
 
-
-
     // initialize
     var game = this.game;
     var scene = this;
-
-    const PAPER_IMG_W = game.assets[IMG_PAPER].width / Object.keys(Paper_frame).length;
-    const PAPER_IMG_H = game.assets[IMG_PAPER].height;
 
     this.paper = {
         sprite: null,
@@ -219,47 +212,34 @@ MainScene.prototype.becomeCurrentScene = function() {
     };
     var paper = this.paper;
 
-    function TouchProperty() {
-        this.x = 0;
-        this.y = 0;
-        return this;
-    }
-
     var moved = false;
-    var touching = false;
     var touch = {
-        'begin': new TouchProperty(),
-        'end': new TouchProperty(),
+        begin: null,
         velocity: {
             x: 0,
             y: 0
         }
     };
 
-    var prevPoint = new TouchProperty();
-    var from = new TouchProperty();
+    var prevPoint;
+    var from = {
+        x: 0,
+        y: 0
+    };
 
-    var scores = {
+    game.scores = {
         ok: 0,
         okMax: 0,
         ng: 0,
         ngMax: 0
     };
-    this.scores = scores;
 
-    var wasteSound = game.assets[SND_WASTE]; //クシャっとするときの効果音
-    var flySound = game.assets[SND_FLY];
-    var passSound = game.assets[SND_PASS];
+    this.wasteSound = game.assets[SND_WASTE]; //クシャっとするときの効果音
+    this.flySound = game.assets[SND_FLY];
+    this.passSound = game.assets[SND_PASS];
 
-    this.wasteSound = wasteSound;
-    this.flySound = flySound;
-    this.passSound = passSound;
-
-    var markOk = game.assets[IMG_MARK_CIRCLE];
-    var markNg = game.assets[IMG_MARK_X];
-
-    this.markOk = markOk;
-    this.markNg = markNg;
+    this.markOk = game.assets[IMG_MARK_CIRCLE];
+    this.markNg = game.assets[IMG_MARK_X];
 
     var background = new Group();
 
@@ -277,8 +257,6 @@ MainScene.prototype.becomeCurrentScene = function() {
     var timer = new Timer(game.fps);
     timer.moveTo(250, 10);
     this.timer = timer;
-
-    var startScene = this.createStartScene();
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
@@ -301,42 +279,42 @@ MainScene.prototype.becomeCurrentScene = function() {
 
     // game main
     scene.addEventListener(Event.TOUCH_START, function(e) {
-        if (e.y < 70 /* pauseButton.y + pauseButton.height */ ) return;
+        /* pauseButton.y + pauseButton.height */
+        if (e.y < 70) return;
 
         touch.begin = e;
+        prevPoint = e;
         from.x = paper.sprite.x;
         from.y = paper.sprite.y;
-        prevPoint = e;
-        touching = true;
+
         moved = false;
 
         if (scene.guide) scene.removeChild(scene.guide);
     });
     scene.addEventListener(Event.TOUCH_MOVE, function(e) {
-        if (!touching) return;
+        if (!touch.begin) return;
 
         touch.velocity.x = e.x - prevPoint.x;
         touch.velocity.y = e.y - prevPoint.y;
         prevPoint = e;
-        if (touching) {
-            if (paper.state == "wasted") {
-                paper.sprite.moveTo(from.x, from.y + e.y - touch.begin.y);
-            } else if (paper.state == "new") {
-                paper.sprite.moveTo(from.x + e.x - touch.begin.x, from.y);
-            }
-        }
         moved = true;
+
+        if (paper.state == "wasted") {
+            paper.sprite.moveTo(from.x, from.y + e.y - touch.begin.y);
+        } else if (paper.state == "new") {
+            paper.sprite.moveTo(from.x + e.x - touch.begin.x, from.y);
+        }
     });
     scene.addEventListener(Event.TOUCH_END, function(e) {
         // for debug
         // gameOver();
 
-        if (!touching) return;
-
-        touching = false;
+        if (!touch.begin) return;
+        touch.begin = null;
 
         if (!moved) {
             scene.crumple();
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
             return;
         }
 
@@ -347,12 +325,15 @@ MainScene.prototype.becomeCurrentScene = function() {
             scene.keep();
             scene.placeNewPaper();
         } else {
+
             paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
         }
 
     });
 
     game.replaceScene(scene);
+
+    var startScene = this.createStartScene();
     game.pushScene(startScene);
 };
 
