@@ -17,11 +17,18 @@ TestThrow.prototype.gotoGameOverScene = function() {
     this.pushScene(scene);
 }
 
-TestThrow.prototype.gotoMainScene = function() {
+var MainScene = Class.create(Scene, {
+    initialize: function(game) {
+        Scene.call(this);
+        this.game = game;
+    }
+});
+
+MainScene.prototype.becomeCurrentScene = function() {
     console.log("Main Scene");
 
     // initialize
-    var thi$ = this;
+    var thi$ = this.game;
     var scene = new Scene();
 
     const Paper_frame = {
@@ -136,10 +143,10 @@ TestThrow.prototype.gotoMainScene = function() {
             });
         }
     };
-    
+
     var background = new Group();
-    
-    var image = this.assets[IMG_TRASH];
+
+    var image = thi$.assets[IMG_TRASH];
     var bgImage = new Sprite(image.width, image.height);
     bgImage.image = image;
     bgImage.fitToSize(thi$.width, thi$.height);
@@ -302,6 +309,10 @@ TestThrow.prototype.gotoMainScene = function() {
 
     });
 
-    this.replaceScene(scene);
-    this.pushScene(startScene);
+    thi$.replaceScene(scene);
+    thi$.pushScene(startScene);
+};
+
+TestThrow.prototype.gotoMainScene = function() {
+    new MainScene(this).becomeCurrentScene();
 };
