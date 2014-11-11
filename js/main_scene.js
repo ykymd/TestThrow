@@ -1,18 +1,20 @@
 TestThrow.prototype.gotoGameOverScene = function() {
     var thi$ = this;
-    var gameOverScene = new Scene();
+    var scene = new Scene();
 
     //"GAMEOVER"の文字の表示
-    var l_over = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
-    l_over.image = thi$.assets[IMG_GAMEOVER];
-    l_over.moveTo(thi$.width, thi$.height / 2 - l_over.height / 2);
-    l_over.tl.moveTo(0, thi$.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).delay(60).moveTo(-thi$.width, thi$.height / 2 - l_over.height / 2, 20, enchant.Easing.QUAD_EASYINOUT).then(function() {
-        thi$.removeScene(gameOverScene);
+    var image = this.assets[IMG_GAMEOVER];
+    var gameover = new Sprite(image.width, image.height);
+    var centerY = (this.height - gameover.height) / 2
+    gameover.image = image;
+    gameover.moveTo(this.width, centerY);
+    gameover.tl.moveTo(0, centerY, 0.5 * this.fps, enchant.Easing.QUAD_EASYINOUT).delay(1.0 * this.fps).moveTo(-this.width, centerY, 0.5 * this.fps, enchant.Easing.QUAD_EASYINOUT).then(function() {
+        thi$.removeScene(scene);
         thi$.gotoResultScene();
     });
-    gameOverScene.addChild(l_over);
+    scene.addChild(gameover);
 
-    this.pushScene(gameOverScene);
+    this.pushScene(scene);
 }
 
 TestThrow.prototype.gotoMainScene = function() {
@@ -21,15 +23,6 @@ TestThrow.prototype.gotoMainScene = function() {
     // initialize
     var thi$ = this;
     var scene = new Scene();
-
-    var bgImage = new Sprite(1280, 1920);
-    bgImage.image = thi$.assets[IMG_TRASH];
-    bgImage.fitToSize(thi$.width, thi$.height);
-    bgImage.moveTo(0, 0);
-
-    var bgRayer = new Sprite(thi$.width, thi$.height);
-    bgRayer.backgroundColor = '#FFF';
-    bgRayer.opacity = 0.5;
 
     const Paper_frame = {
         'SAIRI': 0,
@@ -143,10 +136,71 @@ TestThrow.prototype.gotoMainScene = function() {
             });
         }
     };
+    
+    var background = new Group();
+    
+    var image = this.assets[IMG_TRASH];
+    var bgImage = new Sprite(image.width, image.height);
+    bgImage.image = image;
+    bgImage.fitToSize(thi$.width, thi$.height);
+    background.addChild(bgImage);
+
+    var bgLayer = new Sprite(thi$.width, thi$.height);
+    bgLayer.backgroundColor = '#FFF';
+    bgLayer.opacity = 0.5;
+    background.addChild(bgLayer);
+
+    var timer = new Timer(thi$.fps);
+    timer.moveTo(250, 10);
+
+    //"START"の文字の表示
+    var startScene = new Scene();
+    var l_start = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
+    var labelSize = {
+        'width': 320,
+        'height': 80
+    };
+    l_start.image = thi$.assets[IMG_GAMESTART];
+    l_start.scaleX = labelSize.width / GAMESTART_IMG_WIDTH;
+    l_start.scaleY = labelSize.height / GAMESTART_IMG_HEIGHT;
+    l_start.moveTo(0, thi$.width / 2 - GAMESTART_IMG_HEIGHT / 2);
+    l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
+        l_start.visible = false;
+        thi$.popScene();
+        //player.canclick = true;
+
+        // After 30 seconds, game is over.
+        timer.after(30).then(function() {
+            thi$.scores = scores;
+            thi$.gotoGameOverScene();
+        });
+        this.parentNode.removeChild(l_start);
+        placeNewPaper();
+    });
+    startScene.addChild(l_start);
+
+    // pause menu
+    var pauseImage = thi$.assets[BTN_PAUSE];
+    var pauseSize = {
+        'width': 60,
+        'height': 60
+    };
+    var pauseButton = new Button(pauseImage.width, pauseImage.height);
+    pauseButton.image = pauseImage;
+    pauseButton.fitToSize(pauseSize.width, pauseSize.height);
+    pauseButton.moveTo(10, 10);
+    pauseButton.addEventListener('tap', function() {
+        thi$.gotoPauseScene();
+    });
+
+    // drawing
+    scene.addChild(background);
+    scene.addChild(pauseButton);
+    scene.addChild(timer);
 
     // game main
     scene.addEventListener(Event.TOUCH_START, function(e) {
-        if (e.y < 60) return;
+        if (e.y < 70 /* pauseButton.y + pauseButton.height */ ) return;
 
         touch.begin = e;
         from.x = paper.sprite.x;
@@ -196,8 +250,8 @@ TestThrow.prototype.gotoMainScene = function() {
 
             scene.removeChild(paper.sprite);
             paper.sprite = group;
-            
-            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * game.fps), enchant.Easing.QUINT_EASEOUT);
+
+            paper.sprite.tl.moveTo(PAPER_DEFAULT_X, PAPER_DEFAULT_Y, Math.floor(.25 * thi$.fps), enchant.Easing.QUINT_EASEOUT);
             return;
         }
 
@@ -247,55 +301,6 @@ TestThrow.prototype.gotoMainScene = function() {
         }
 
     });
-
-    var timer = new Timer(thi$.fps);
-    timer.moveTo(250, 10);
-
-    //"START"の文字の表示
-    var startScene = new Scene();
-    var l_start = new Sprite(GAMESTART_IMG_WIDTH, GAMESTART_IMG_HEIGHT);
-    var labelSize = {
-        'width': 320,
-        'height': 80
-    };
-    l_start.image = thi$.assets[IMG_GAMESTART];
-    l_start.scaleX = labelSize.width / GAMESTART_IMG_WIDTH;
-    l_start.scaleY = labelSize.height / GAMESTART_IMG_HEIGHT;
-    l_start.moveTo(0, thi$.width / 2 - GAMESTART_IMG_HEIGHT / 2);
-    l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
-        l_start.visible = false;
-        thi$.popScene();
-        //player.canclick = true;
-
-        // After 30 seconds, game is over.
-        timer.after(30).then(function() {
-            thi$.scores = scores;
-            thi$.gotoGameOverScene();
-        });
-        this.parentNode.removeChild(l_start);
-        placeNewPaper();
-    });
-    startScene.addChild(l_start);
-
-    // pause menu
-    var pauseImage = thi$.assets[BTN_PAUSE];
-    var pauseSize = {
-        'width': 60,
-        'height': 60
-    };
-    var pauseButton = new Button(pauseImage.width, pauseImage.height);
-    pauseButton.image = pauseImage;
-    pauseButton.fitToSize(pauseSize.width, pauseSize.height);
-    pauseButton.moveTo(10, 10);
-    pauseButton.addEventListener('tap', function() {
-        thi$.gotoPauseScene();
-    });
-
-    // drawing
-    scene.addChild(bgImage);
-    scene.addChild(bgRayer);
-    scene.addChild(pauseButton);
-    scene.addChild(timer);
 
     this.replaceScene(scene);
     this.pushScene(startScene);
