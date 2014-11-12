@@ -1,4 +1,3 @@
-
 var Button = Class.create(Sprite, {
     initialize: function(width, height) {
         Sprite.call(this, width, height);
@@ -85,6 +84,9 @@ var Timer = Class.create(Group, {
             if (seconds < 10) {
                 number.scaleX = 1.0;
                 number.x = 18;
+            } else {
+                number.scaleX = .5;
+                number.x = -30;
             }
             number.setText(seconds.toFixed(0));
         };

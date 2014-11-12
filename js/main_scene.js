@@ -106,19 +106,18 @@ MainScene.prototype.createStartScene = function() {
         'width': 320,
         'height': 80
     };
+    var scale = {
+        x: labelSize.width / GAMESTART_IMG_WIDTH,
+        y: labelSize.height / GAMESTART_IMG_HEIGHT
+    };
     l_start.image = game.assets[IMG_GAMESTART];
-    l_start.scaleX = labelSize.width / GAMESTART_IMG_WIDTH;
-    l_start.scaleY = labelSize.height / GAMESTART_IMG_HEIGHT;
+    l_start.scaleX = scale.x * 5;
+    l_start.scaleY = scale.y * 5;
+    l_start.rotation = 45;
     l_start.moveTo(0, game.width / 2 - GAMESTART_IMG_HEIGHT / 2);
-    l_start.tl.rotateTo(45, 1).scaleTo(5, 1).scaleTo(0.9, 20).and().rotateTo(0, 20).delay(10).fadeOut(10).and().moveBy(0, -50, 10).then(function() {
+    l_start.tl.scaleTo(scale.x * 0.9, scale.y * 0.9, 0.25 * game.fps).and().rotateTo(0, 0.25 * game.fps).delay(0.125 * game.fps).fadeOut(0.125 * game.fps).and().moveBy(0, -50, 0.125 * game.fps).then(function() {
         game.popScene();
 
-        // After 30 seconds, game is over.
-        scene.timer.after(30).then(function() {
-            game.scores = scene.scores;
-            game.gotoGameOverScene();
-        });
-        this.parentNode.removeChild(l_start);
         scene.placeNewPaper();
     });
     startScene.addChild(l_start);
@@ -255,7 +254,12 @@ MainScene.prototype.becomeCurrentScene = function() {
 
     var timer = new Timer(game.fps);
     timer.moveTo(250, 10);
-    this.timer = timer;
+    // After 30 seconds, game is over.
+    timer.after(0).exec(function() {
+        timer.after(30).exec(function() {
+        game.gotoGameOverScene();
+        });
+    });
 
     // pause menu
     var pauseImage = game.assets[BTN_PAUSE];
