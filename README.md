@@ -7,7 +7,11 @@
 最優秀賞・コロプラ賞・アカツキ賞を受賞
 
 つくったひと
+
 ・yuki
+
 ・tomioka
+
 ・phone
+
 ・hibino
