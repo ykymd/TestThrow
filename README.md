@@ -15,3 +15,11 @@
 ・phone
 
 ・hibino
+
+展望
+==============
+cordovaでスマートフォンアプリ化
+
+未実装仕様の実装
+
+TypeScript化
